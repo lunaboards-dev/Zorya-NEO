@@ -182,7 +182,7 @@ local tmpfile = os.tmpname()
 local tmpf = io.open(tmpfile, "wb")
 tmpf:write(env.code)
 tmpf:close()
-if (os.execute("luamin -f "..tmpfile.." > "..arg[2])) then
+if (os.execute("luamin -f "..tmpfile..">"..arg[2])) then
 	os.execute("stat -c \"Output: %s bytes\" "..arg[2])
 else
 	io.stderr:write("Error: ")
