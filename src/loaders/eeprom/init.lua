@@ -33,4 +33,4 @@ local function loadfile(file)
 	return load(buffer, "=" .. file, "bt", _G)
 end
 
-loadfile(".zv2/boot.urt")()
+loadfile(".zv2/boot.urt")(loadfile, fs.address)
