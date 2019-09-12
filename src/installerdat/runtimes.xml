@@ -1,0 +1,8 @@
+<runtimes>
+	<runtime id="eeprom">
+		<name lang="en_US">EEPROM</name>
+		<name lang="en_GB">EEPROM</name>
+		<desc lang="en_US">Basic EEPROM loader.</desc>
+		<desc lang="en_US">Basic EEPROM loader.</desc>
+	</runtime>
+</runtimes>

@@ -1,0 +1,8 @@
+<language-manifest fallback="en_US">
+	<lang code="en_US">
+		<string name="zyname">Zorya NEO BIOS v2.0 (%iK free)</string>
+		<string name="zyautoboot">Automatically booting in %is.</string>
+		<string name="zyusage_1">Use ↑ and ↓ keys to select which entry is highlighted.</string>
+		<string name="zyusage_2">Use ENTER to boot the selected entry.</string>
+	</lang>
+</language-manifest>

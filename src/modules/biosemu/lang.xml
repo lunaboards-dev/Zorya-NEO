@@ -1,0 +1,5 @@
+<language-manifest fallback="en_US">
+	<lang code="en_US">
+		<string name="zyemu">Zorya BIOS Emulator</string>
+	</lang>
+</language-manifest>

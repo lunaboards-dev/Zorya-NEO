@@ -1,0 +1,39 @@
+-- MineOS launcher
+entry "MineOS"
+	loadmod "biosemu"
+	biosload ".zy2/biosemu/mineos.lua"
+	biosdatload ".zy2/biosemu/mineos.bin"
+	boot
+
+-- Emulate Zorya v1
+entry "Zorya v1 Emulation"
+	loadmod "biosemu"
+	biosload ".zy2/biosemu/zorya13.lua"
+	biosdatload ".zy2/biosemu/zorya13.bin"
+	boot
+
+-- Boot OpenOS
+entry "OpenOS"
+	loadmod "openos"
+	openos_kload "c2dfc58a-a895-407e-911e-17cc57ff6e17"
+	boot
+
+-- Boot OEFIv2.1 application
+entry "OEFI2(c2d): OpenOS.efi2"
+	loadmod "oefi2"
+	oefiload "c2dfc58a-a895-407e-911e-17cc57ff6e17" "OpenOS.efi2"
+	boot
+
+-- Boot Fuchas NT kernel
+entry "Fuchas"
+	loadmod "fuchas"
+	fuchas_kload "6e621ed7-97cd-478b-a896-bb7fa42ca8e6"
+	boot
+
+-- Boot Tsuki kernel
+entry "Tsuki Kernel 1.0"
+	loadmod "tsuki"
+	load_initramfs "0c6fa9e1-4e4b-44e7-9b80-4d9dff20b6d5" "/boot/tsuki1.0-init.img" "d9e2e89b-5050-47d5-80f0-59914669e37a"
+	tsuki_karg "initramfs=d9e2e89b-5050-47d5-80f0-59914669e37a init=/sbin/init.lua bootaddr=0c6fa9e1-4e4b-44e7-9b80-4d9dff20b6d5"
+	tsuki_kload "0c6fa9e1-4e4b-44e7-9b80-4d9dff20b6d5" "/boot/tsuki1.0.tknl"
+	boot

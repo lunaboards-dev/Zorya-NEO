@@ -1,0 +1,16 @@
+<modules>
+	<module id="bootmenu" required="true">
+		<file name="bootmenu.zyr" />
+		<name lang="en_US">Boot Menu</name>
+		<name lang="en_GB">Boot Menu</name>
+		<desc lang="en_US">Classic Zorya 1.x style boot menu.</desc>
+		<desc lang="en_GB">Classic Zorya 1.x style boot menu.</desc>
+	</module>
+	<module id="loadfile" required="true">
+		<file name="loadfile.zyr" />
+		<name lang="en_US">Load file</name>
+		<name lang="en_GB">Load file</name>
+		<desc lang="en_US">A module that allows for easy loading of files.</desc>
+		<desc lang="en_GB">A module that allows for easy loading of files.</desc>
+	</module>
+</modules>
