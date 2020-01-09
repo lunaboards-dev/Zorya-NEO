@@ -1,0 +1,5 @@
+pkg/**
+debug.lua
+luapreproc.lua
+zorya-neo-installer.lua
+bsrc/**

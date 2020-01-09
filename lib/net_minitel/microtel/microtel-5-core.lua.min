@@ -1,0 +1,15 @@
+{
+ {"address","A"},
+ {"vport","V"},
+ {"sclose","S"},
+ {"port","P"},
+ {"conn.state","conn.s"},
+ {"conn.buffer","conn.b"},
+ {"self.buffer","self.b"},
+ {"self.state","self.s"},
+ {"self","s"},
+ {"conn","C"},
+ {"etype","E"},
+ {"from","F"},
+ {"data","D"},
+}
