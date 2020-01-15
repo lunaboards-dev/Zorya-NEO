@@ -38,13 +38,15 @@ end
 
 local cdevinfo = computer.getDeviceInfo
 
-component = {}
+vdev.component = {}
+vdev.computer = {}
 
 for k, v in pairs(comp) do
-  component[k] = v
+  vdev.component[k] = v
 end
 
-function component.list(dtype)
+function vdev.component.list(dtype, match)
+  dtype = dtype or ""
   local lpos = 0
   local func = comp.list(dtype)
   local ft = {}
@@ -52,7 +54,7 @@ function component.list(dtype)
     ft[k] = v
   end
   for i=1, #devices do
-    if (devices[i].type:find(dtype, true) == 1) then
+    if (dtype == devices[i].type or (not match and devices[i].type:sub(1, #dtype) == dtype)) then
       ft[ devices[i].addr ] = devices[i].type
     end
   end
@@ -65,22 +67,28 @@ function component.list(dtype)
       if (lpos > #devices) then
         return func()
       end
-      if (devices[lpos].type:find(dtype, true) == 1) then
+      if (dtype == devices[lpos].type or (not match and devices[lpos].type:sub(1, #dtype) == dtype)) then
         return devices[lpos].addr
       end
     end
   end})
 end
 
-function component.proxy(addr)
+local function debug_log(...)
+  log("return", ...)
+  return ...
+end
+
+function vdev.component.proxy(addr)
   for i=1, #devices do
     if (devices[i].addr == addr) then
       return setmetatable({}, {__index=function(self, index)
         if (types[devices[i].type].methods[index]) then
           local func = setmetatable({}, {__call=function(...)
+            log("proxy", addr, index, ...)
             return types[devices[i].type].methods[index](devices[i].addr, ...)
           end, __tostring = function()
-            return types[devices[i].type].doc[index]
+            return types[devices[i].type].doc[index] or (index.."(...):any")
           end})
           self[index] = func
         end
@@ -90,22 +98,23 @@ function component.proxy(addr)
   return comp.proxy(addr)
 end
 
-function component.invoke(addr, meth, ...)
+function vdev.component.invoke(addr, meth, ...)
+  log("invoke", addr, meth, ...)
   for i=1, #devices do
     if (devices[i].addr == addr) then
-      if (types[devices[i].type][meth]) then
-        types[devices[i].type].methods[meth](addr, ...)
+      if (types[devices[i].type].methods[meth]) then
+        return debug_log("invoke", types[devices[i].type].methods[meth](addr, ...))
       end
     end
   end
   return comp.invoke(addr, meth, ...)
 end
 
-function component.doc(addr, meth)
+function vdev.component.doc(addr, meth)
   for i=1, #devices do
     if (devices[i].addr == addr) then
       if (types[devices[i].type].methods[meth]) then
-        return types[devices[i].type].doc[meth]
+        return types[devices[i].type].doc[meth] or (index.."(...):any")
       end
       return
     end
@@ -113,7 +122,7 @@ function component.doc(addr, meth)
   return comp.doc(addr, meth)
 end
 
-function component.type(addr)
+function vdev.component.type(addr)
   for i=1, #devices do
     if (devices[i].addr == addr) then
       return devices[i].type
@@ -122,7 +131,7 @@ function component.type(addr)
   return comp.type(addr)
 end
 
-function component.slot(addr)
+function vdev.component.slot(addr)
   for i=1, #devices do
     if (devices[i].addr == addr) then
       return -1
@@ -131,7 +140,7 @@ function component.slot(addr)
   return comp.slot(addr)
 end
 
-function component.methods(addr)
+function vdev.component.methods(addr)
   for i=1, #devices do
     if (devices[i].addr == addr) then
       local m = {}
@@ -144,7 +153,7 @@ function component.methods(addr)
   return comp.methods(addr)
 end
 
-function computer.getDeviceInfo()
+function vdev.computer.getDeviceInfo()
   local tbl = cdevinfo()
   for i=1, #devices do
     local info = {}
@@ -156,6 +165,16 @@ function computer.getDeviceInfo()
     dtype.getinfo(devices[i].addr, info)
   end
   return tbl
+end
+
+function vdev.overwrite(env)
+  for k, v in pairs(vdev) do
+    if (type(v) == "table") then
+      for j, b in pairs(v) do
+        env[k][j] = b
+      end
+    end
+  end
 end
 
 return vdev

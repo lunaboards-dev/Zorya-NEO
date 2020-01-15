@@ -41,7 +41,7 @@ function lzss_decompress(input)
 
 	return table.concat(output)
 end
-print("Decompressing CPIO...")
+--print("Decompressing CPIO...")
 local code = lzss_decompress(@[{io.stdin:read("*a")}])
 local dat = code
 local tbl = {}

@@ -52,6 +52,9 @@ function thd.run()
 			if (c_status(threads[i][2]) ~= "running") then
 				local er, dl = c_resume(threads[i][2], unpack(last_sig))
 				if (not er) then error(threads[i][1]..": "..dl) end
+				if (dl == "k") then
+					threads[i][6] = true
+				end
 				dl = computer.uptime() + (dl or math.huge)
 				threads[i][4] = dl
 				sigs[#sigs+1] = {ps(0)}
@@ -59,13 +62,11 @@ function thd.run()
 		end
 	end
 	local t = {}
-	for k,v in pairs(threads) do
+	for i=1, #threads do
+		local v = threads[i]
 		if (c_status(v[2]) ~= "dead" and not v[6]) then
-			if (type(k) == "number") then
-				t[#t+1] = v
-			else
-				t[k] = v
-			end
+			t[#t+1] = v
+			t[v[2]] = v
 		end
 	end
 	threads = t

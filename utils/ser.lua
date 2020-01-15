@@ -41,7 +41,7 @@ local characters = {
 }
 local computer = computer or require("computer")
 local fsaddr = args[1] or computer.getBootAddress()
-print(fsaddr)
+--print(fsaddr)
 local component = component or require("component")
 local proxy, list = component.proxy, component.list
 local gpu = proxy(list("gpu")())
@@ -87,6 +87,7 @@ function setBar(pos)
 	gpu.fill(8, (h/2)+1, w-16, 1, " ")
 	gpu.setBackground(2, true)
 	gpu.fill(8, (h/2)+1, ((w-16)/100)*pos, 1, " ")
+	computer.pullSignal(0)
 end
 
 function writeFile(fs, path, data)
@@ -146,6 +147,13 @@ eeprom.setData(fs.address)
 eeprom.setLabel("Zorya NEO BIOS v2.0")
 setBar(100)
 setStatus("Rebooting in 5 seconds...")
+if not fs.exists(".zy2/cfg.lua") then
+	writeFile(fs, ".zy2/cfg.lua", string.format([[local menu = loadmod("menu_classic")
+menu.add("OpenOS on %s", function()
+	return loadmod("loader_openos")("%s")
+end)
+menu.draw()]], fsaddr:sub(1, 3), fsaddr))
+end
 computer = computer or require("computer")
 local stime = computer.uptime()
 while true do

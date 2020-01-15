@@ -17,19 +17,20 @@ for i=1, #f do
 	end
 end
 io.stdout:write("\"\n")]]
+local rep = {
+	["\0"] = "\\0",
+	["\\"] = "\\\\",
+	["\""] = "\\\"",
+	["\n"] = "\\n",
+	["\r"] = "\\r",
+	["\t"] = "\\t",
+	[" "] = "\x20"
+}
 local function mkstr(d)
 	local dat = "\""
 	for i=1, #f do
-		if (d:byte(i) == 0) then
-			dat = dat .. "\0"
-		elseif (d:sub(i,i) == "\\") then
-			dat = dat .. ("\\\\")
-		elseif (d:sub(i,i) == "\"") then
-			dat = dat .. ("\\\"")
-		elseif (d:sub(i,i) == "\n") then
-			dat = dat .. ("\\n")
-		elseif (d:sub(i,i) == "\r") then
-			dat = dat .. ("\\r")
+		if (rep[d:sub(i, i)]) then
+			dat = dat .. rep[d:sub(i, i)]
 		else
 			dat = dat .. (d:sub(i,i))
 		end
