@@ -14,8 +14,12 @@ local unpack = unpack or table.unpack
 local function load_oefi_env(file, envx)
 	utils.debug_log(file, envx.fs)
 	local cpio = krequire("util_cpio")
-	local vdev = zy.loadmod("util_vdev")
-	local arc = cpio.read(envx.fs, file)
+	local urf = krequire("util_urf")
+	local vdev = zy.loadmod("util_vcomponent")
+	local arc = urf.read(envx.fs, file)
+	if not arc then
+		arc = cpio.read(envx.fs, file)
+	end
 	local oefi_env = {}
 	local env = {}
 	utils.deepcopy(_G, env)
@@ -25,6 +29,9 @@ local function load_oefi_env(file, envx)
 	env._ZVSTR = nil
 	env._ZPAT = nil
 	env.oefi = setmetatable(oefi_env, {__index=oefi})
+	local p = gen_proto()
+	vdev.install(env)
+	vdev.register("zbios", "eeprom", p.methods)
 	local fs = component.proxy(envx.fs)
 	function oefi_env.loadfile(path)
 		local h = fs.open(path)

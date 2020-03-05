@@ -14,11 +14,19 @@ local computer = computer
 local booted = false
 local zcfg = {}
 function log(...)
-	component.proxy(component.list("ocemu")()).log(...)
+	component.proxy(component.list("ocemu")() or component.list("sandbox")()).log(...)
 end
 local th_i = 0
 local function th_a(func)
 	thd.add("zyneo$"..th_i, func)
+	th_i = th_i + 1
+end
+
+local function load_lua(src, ...)
+	if (src:sub(1, 4) == "\27ZLSS") then
+		src = lzss_decompress(src:sub(5))
+	end
+	return load(src, ...)
 end
 
 local builtins = {}
@@ -69,13 +77,6 @@ sys.add_lib("zorya", (function()
 end)())
 
 --#include "src/zy-neo/init.lua"
-
-local function load_lua(src, ...)
-	if (src:sub(1, 4) == "\27ZLS") then
-		src = lzss_decompress(src:sub(5))
-	end
-	return load(src, ...)
-end
 
 -- Zorya's handler thread.
 th_a(function()

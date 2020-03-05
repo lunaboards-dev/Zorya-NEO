@@ -22,4 +22,4 @@ function status(msg)
 	end
 end
 status("Decompressing image...")
-return load(lzss_decompress($[[luacomp src/zy-neo/zinit.lua -mluamin 2>/dev/null | sed "s/\]\]/]\ ]/g" | lua5.3 src/lzssc.lua | lua utils/mkluastring.lua ]]), "=bios.lua")(lzss_decompress)
+return load(lzss_decompress($[[luacomp src/zy-neo/zinit.lua -mluamin 2>/dev/null | sed "s/\]\]/]\ ]/g" | lua5.3 utils/makezbios.lua ]]), "=bios.lua")(lzss_decompress)

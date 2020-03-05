@@ -1,7 +1,7 @@
 local zy = krequire("zorya")
-local vdev = zy.loadmod("util_vdev")
-vdev.register_type("zybios", {
-	methods = {
+local vdev = zy.loadmod("util_vcomponent")
+vdev.register("ZORYA_BIOS", "zybios", {
+	{
 		get_threads_info = function()
 			local threads = {}
 			for i=1, zy.lkthdn() do
@@ -20,12 +20,11 @@ vdev.register_type("zybios", {
 			return _ZGIT
 		end
 	},
-	docs = {
+	{
 		get_threads_info = "get_threads_info():table -- Returns the BIOS thread information.",
 		get_version = "get_version():string -- Returns the Zorya NEO version.",
 		get_git_revision = "get_git_revision():string -- Returns the git revision of the build."
 	}
 })
-vdev.add_device("ZORYA_BIOS", "zybios")
 
 return true

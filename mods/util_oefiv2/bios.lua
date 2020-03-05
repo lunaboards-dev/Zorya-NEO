@@ -1,4 +1,4 @@
-local function gen_proto(drive)
+local function gen_proto()
 	return {
 		methods = {
 			get = function()

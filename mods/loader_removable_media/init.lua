@@ -3,7 +3,7 @@ return function(filter)
 	return function()
 		for f in component.list("filesystem") do
 			if (filter(f) and component.invoke(f, "spaceTotal") ) then
-
+				
 			end
 		end
 	end

@@ -1,8 +1,8 @@
 -- P A I N
 
-local flag_crit = 1 << 6
-local flag_required = 1 << 7
-local flag_ext = 1 << 8
+local flag_crit = 1 << 5
+local flag_required = 1 << 6
+local flag_ext = 1 << 7
 
 local function read_ali(fs, h)
 	local tmp = 0
@@ -51,7 +51,7 @@ local xdec = {
 	end,
 	["ATIM"] = function(fs, h)
 		return read_int(fs, h, 8)
-	end,,
+	end,
 	["SCOS"] = function(fs, h)
 		return read_string(fs, h)
 	end
@@ -88,7 +88,7 @@ local decode = {
 	end,
 	["Z"] = function(fs, h, size)
 		return {
-			type="eoh"
+			type="eoh",
 			size = read_ali(fs, h)
 		}
 	end

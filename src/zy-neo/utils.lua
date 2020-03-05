@@ -30,6 +30,8 @@ function utils.readfile(f,h)
 	return b
 end
 
+utils.load_lua = load_lua
+
 -- Hell yeah, deepcopy time.
 function utils.deepcopy(src, dest)
 	dest = dest or {}
