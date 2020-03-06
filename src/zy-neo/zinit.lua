@@ -48,6 +48,10 @@ sys.add_lib("zorya", (function()
 
 	local loaded_mods = {}
 
+	loaded_mods.util_romfs = (function()
+--#include "src/zy-neo/builtins/util_romfs.lua"
+	end)()
+
 	function zy.loadmod(mod)
 		if (loaded_mods[mod]) then return loaded_mods[mod] end
 		for i=1, #mod_search do

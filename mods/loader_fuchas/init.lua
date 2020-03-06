@@ -6,18 +6,6 @@ local thd = krequire("thd")
 local oefi = zy.loadmod("util_oefiv2")
 local fuchas = {}
 
-return function(addr, args)
-	--oefi.getExtensions().ZyNeo_ExecOEFIApp(addr, ".efi/fuchas.efi2", ...)
-	--We don't do that here.
-	fuch.env = oefi.getExtensions().ZyNeo_GetOEFIEnv(addr)
-	fuch.env.computer.supportsOEFI = function()
-		return true
-	end
-	fuch.env.os_arguments = fuch.args
-	fuch.env.loadfile = fuch.env.oefi.loadfile
-	return setmetatable(fuch, {__index=fuchas})
-end
-
 function fuchas:karg(key, value)
 	self.args[key] = value
 end
@@ -28,4 +16,16 @@ function fuchas:boot()
 		computer.pushSignal("fuchas_dead")
 	end)
 	while true do if computer.pullSignal() == "fuchas_dead" then break end end
+end
+
+return function(addr, args)
+	--oefi.getExtensions().ZyNeo_ExecOEFIApp(addr, ".efi/fuchas.efi2", ...)
+	--We don't do that here.
+	fuch.env = oefi.getExtensions().ZyNeo_GetOEFIEnv(addr)
+	fuch.env.computer.supportsOEFI = function()
+		return true
+	end
+	fuch.env.os_arguments = fuch.args
+	fuch.env.loadfile = fuch.env.oefi.loadfile
+	return setmetatable(fuch, {__index=fuchas})
 end

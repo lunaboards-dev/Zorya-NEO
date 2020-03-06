@@ -1,5 +1,5 @@
 local zy = krequire("zorya")
-local vdev = zy.loadmod("util_vcomponent")
+local vdev = krequire("util_vcomponent")
 vdev.register("ZORYA_BIOS", "zybios", {
 	{
 		get_threads_info = function()
