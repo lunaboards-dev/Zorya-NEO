@@ -90,12 +90,6 @@ function setBar(pos)
 	computer.pullSignal(0)
 end
 
-function writeFile(fs, path, data)
-	local hand = fs.open(path, "w")
-	fs.write(hand, data)
-	fs.close(hand)
-end
-
 function mkdir(fs, path)
 	fs.makeDirectory(path)
 end
@@ -107,6 +101,24 @@ local fs = proxy(fsaddr)
 fs.makeDirectory(".zy2")
 fs.makeDirectory(".zy2/mods")
 fs.makeDirectory(".zy2/lib")
+
+local romfs = fs.open(".zy2/image.romfs", "w")
+fs.write(romfs, "romfs\1\0")
+
+function writeFile(path, data)
+	--local hand = fs.open(path, "w")
+	--fs.write(hand, data)
+	--fs.close(hand)
+	fs.write(romfs, string.char(#path)..path)
+	local ext = path:sub(#path-2)
+	if (ext == "lua" or ext == "z2l" or ext == "z2y") then
+		fs.write(romfs, "x")
+	else
+		fs.write(romfs, "-")
+	end
+	fs.write(romfs, string.pack("<i2", #data))
+	fs.write(romfs, data)
+end
 
 setStatus("Getting file list...")
 setBar(0)
@@ -122,8 +134,10 @@ setBar(0)
 for i=1, #pkg_files do
 	setStatus("Extracting "..(lang["mod_"..pkg_files[i].cat.."_"..pkg_files[i].name.."_name"] or "#mod_"..pkg_files[i].cat.."_"..pkg_files[i].name.."_name").."... ("..i.." of "..#pkg_files..")")
 	setBar(100*(i/#pkg_files))
-	writeFile(fs, ".zy2/"..pkg_files[i].path, getfile(pkg_files[i].path))
+	writeFile(".zy2/"..pkg_files[i].path, getfile(pkg_files[i].path))
 end
+
+writeFile("TRAILER!!!", [[{os="Zorya NEO",version="2.0"}]])
 
 setStatus("Extracting EEPROM...")
 setBar(0)

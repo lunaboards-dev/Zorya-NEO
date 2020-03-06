@@ -1,14 +1,14 @@
 local readfile=function(f,h)
 	local b=""
-	local d,r=component.invoke(f,"read",h,math.huge)
+	local d,r=f.read(h,math.huge)
 	if not d and r then error(r)end
 	b=d
 	while d do
-		local d,r=component.invoke(f,"read",h,math.huge)
+		local d,r=f.read(h,math.huge)
 		b=b..(d or "")
 		if(not d)then break end
 	end
-	component.invoke(f,"close",h)
+	f.close(h)
 	return b
 end
 
@@ -17,15 +17,30 @@ local bfs = {}
 local cfg = component.proxy(component.list("eeprom")()).getData()
 
 local baddr = cfg:sub(1, 36)
+local bootfs = component.proxy(baddr)
+
+local romfs_file = component.invoke(baddr, "open", ".zy2/bootimage.romfs")
+
+local romfs_dev = romfs.read(function(a)
+	return bootfs.read(romfs_file, a)
+end, function(a)
+	return bootfs.seek(romfs_file, "cur", a)
+end, function()
+	return bootfs.close(romfs_file)
+end)
 
 function bfs.getfile(path)
-	local h = assert(component.invoke(baddr, "open", path, "r"))
-	return readfile(baddr, h)
+	return romfs_dev:fetch(path)
 end
 
 function bfs.exists(path)
-	return component.invoke(baddr, "exists", path)
+	return romfs_dev:exists(path)
 end
 
+function bfs.getcfg()
+	local h = assert(bootfs.open(".zy2/cfg.lua", "r"))
+	readfile(bootfs, h)
+	return 
+end
 
 bfs.addr = baddr

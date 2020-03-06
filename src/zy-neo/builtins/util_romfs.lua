@@ -30,6 +30,15 @@ function arc:fetch(path)
 	return nil, "file not found"
 end
 
+function arc:exists(path)
+	for i=1, #self.tbl do
+		if (self.tbl[i].name == path) then
+			return true
+		end
+	end
+	return false
+end
+
 function arc:close()
 	self.close()
 	self.tbl = nil
@@ -48,5 +57,3 @@ function arc:list_dir(path)
 	end
 	return ent
 end
-
-return romfs
