@@ -15,7 +15,6 @@
 	{name="minitel", cat="net", path="lib/net_minitel.zy2l"},
 	--{name="vdev", cat="util", path="mods/util_vdev.zy2m"},
 	{name="menu", cat="menu", path="mods/menu_classic.zy2m"},
-	{name="thd", cat="core", path="lib/thd.zy2l"}
 	--{name="vdevrt", cat="rtmod", path="mods/rtmod_vdevrt.zy2m"},
 	--{name="tsukinet", cat="net", path="mods/net_tsukinet"},
 	--{name="biosemu", cat="loader", path="mods/loader_biosemu.zy2m", warning="warn_mod_biosemu"},

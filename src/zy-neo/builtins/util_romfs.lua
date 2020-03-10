@@ -18,6 +18,7 @@ function romfs.read(read, seek, close)
 		local fsize = readint(read, 2)
 		local exec = read(1)
 		tbl[#tbl+1] = {name = name, size = fsize, exec = exec == "x", pos = seek(0)}
+		utils.debug_log(nz, name, fsize, exec)
 		seek(fsize)
 		lname = name
 	end

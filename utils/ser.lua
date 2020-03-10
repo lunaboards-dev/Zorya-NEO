@@ -4,9 +4,6 @@ local dat = args[2]
 table.remove(args, 1)
 table.remove(args, 1)
 
-local comp = component or require("component")
-local computer = computer or require("computer")
-
 function getfile(path)
 	for i=1, #tbl do
 		if (tbl[i].name == path) then
@@ -14,6 +11,18 @@ function getfile(path)
 		end
 	end
 end
+
+if debug.debug then
+	for i=1, #tbl do
+		print(tbl[i].name, tbl[i].filesize)
+	end
+	print("Zorya NEO Installer")
+	print("This was made for OpenComputers, and, as such, is not compatible with your system.")
+	os.exit(0)
+end
+
+local comp = component or require("component")
+local computer = computer or require("computer")
 
 --[[local baddr = computer.getBootAddress()
 local c = comp.proxy(baddr)
