@@ -19,7 +19,9 @@ local cfg = component.proxy(component.list("eeprom")()).getData()
 local baddr = cfg:sub(1, 36)
 local bootfs = component.proxy(baddr)
 
-local romfs_file = component.invoke(baddr, "open", ".zy2/bootimage.romfs")
+assert(bootfs.exists(".zy2/image.romfs"), "No boot image!")
+
+local romfs_file = assert(bootfs.open(".zy2/image.romfs", "rb"))
 
 local romfs_dev = romfs.read(function(a)
 	return bootfs.read(romfs_file, a)
@@ -39,8 +41,7 @@ end
 
 function bfs.getcfg()
 	local h = assert(bootfs.open(".zy2/cfg.lua", "r"))
-	readfile(bootfs, h)
-	return 
+	return readfile(bootfs, h)
 end
 
 bfs.addr = baddr

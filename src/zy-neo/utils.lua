@@ -1,5 +1,3 @@
-
-builtins.utils = function()
 local utils = {}
 
 function utils.debug_log(...)
@@ -59,5 +57,5 @@ function utils.deepcopy(src, dest)
 	end
 	return dest
 end
-return utils
-end
+utils.debug_log("Zorya NEO Started!")
+builtins.utils = function() return utils end

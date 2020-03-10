@@ -13,6 +13,7 @@ os.execute("mkdir -p pkg/bios")
 
 status("Building EEPROM...")
 os.execute("luacomp src/loader.lua -O pkg/bios/managed.bios")
+os.execute("luacomp src/zy-neo/zinit.lua -O debug.lua")
 if (os.execute("[[ $(stat --printf=%s pkg/bios/managed.bios) > 4096 ]]")) then
 	io.stderr:write("WARNING: BIOS is over 4KiB!\n")
 end

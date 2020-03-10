@@ -111,12 +111,12 @@ function writeFile(path, data)
 	--fs.close(hand)
 	fs.write(romfs, string.char(#path)..path)
 	local ext = path:sub(#path-2)
+	fs.write(romfs, string.pack("<i2", #data))
 	if (ext == "lua" or ext == "z2l" or ext == "z2y") then
 		fs.write(romfs, "x")
 	else
 		fs.write(romfs, "-")
 	end
-	fs.write(romfs, string.pack("<i2", #data))
 	fs.write(romfs, data)
 end
 
@@ -162,11 +162,13 @@ eeprom.setLabel("Zorya NEO BIOS v2.0")
 setBar(100)
 setStatus("Rebooting in 5 seconds...")
 if not fs.exists(".zy2/cfg.lua") then
-	writeFile(fs, ".zy2/cfg.lua", string.format([[local menu = loadmod("menu_classic")
+	local hand = fs.open(".zy2/cfg.lua", "w")
+	fs.write(hand, string.format([[local menu = loadmod("menu_classic")
 menu.add("OpenOS on %s", function()
 	return loadmod("loader_openos")("%s")
 end)
 menu.draw()]], fsaddr:sub(1, 3), fsaddr))
+	fs.close(hand)
 end
 computer = computer or require("computer")
 local stime = computer.uptime()

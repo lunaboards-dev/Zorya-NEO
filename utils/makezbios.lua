@@ -118,9 +118,7 @@ end
 local function mkstr(d)
 	local dat = "\""
 	for i=1, #f do
-		if (d:byte(i) == 0) then
-			dat = dat .. "\0"
-		elseif (d:sub(i,i) == "\\") then
+		if (d:sub(i,i) == "\\") then
 			dat = dat .. ("\\\\")
 		elseif (d:sub(i,i) == "\"") then
 			dat = dat .. ("\\\"")
@@ -128,6 +126,8 @@ local function mkstr(d)
 			dat = dat .. ("\\n")
 		elseif (d:sub(i,i) == "\r") then
 			dat = dat .. ("\\r")
+		elseif (d:sub(i,i) == "\t") then
+			dat = dat .. ("\\t")
 		else
 			dat = dat .. (d:sub(i,i))
 		end

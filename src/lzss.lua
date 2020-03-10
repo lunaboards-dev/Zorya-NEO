@@ -1,1 +1,11 @@
-local function lzss_decompress(a)local b,c,d,e,f,g,h,i=1,'',''while b<=#a do e=c.byte(a,b)b=b+1;for j=0,7 do h=c.sub;i=h(a,b,b)if e>>j&1<1 and b<#a then g=c.unpack('>I2',a,b)f=1+g>>4;i=h(d,f,f+g&15+2)b=b+1 end;b=b+1;c=c..i;d=h(d..i,-4^6)end end;return c end
+function lzss_decompress(a)local b,c,d,e,j,i,h,g=1,'',''while b<=#a do
+e=c.byte(a,b)b=b+1
+for k=0,7 do h=c.sub
+g=h(a,b,b)if e>>k&1<1 and b<#a then
+i=c.unpack('>I2',a,b)j=1+(i>>4)g=h(d,j,j+(i&15)+2)b=b+1
+end
+b=b+1
+c=c..g
+d=h(d..g,-4^6)end
+end
+return c end

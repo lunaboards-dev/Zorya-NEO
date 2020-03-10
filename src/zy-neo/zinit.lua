@@ -23,9 +23,11 @@ local function th_a(func)
 end
 
 local function load_lua(src, ...)
-	if (src:sub(1, 4) == "\27ZLSS") then
+	log(#src)
+	if (src:sub(1, 4) == "\27ZLS") then
 		src = lzss_decompress(src:sub(5))
 	end
+	log("DECOMPRESS", src)
 	return load(src, ...)
 end
 
@@ -89,6 +91,7 @@ th_a(function()
 		local zy = krequire("zorya")
 		zy.add_mod_search(function(mod)
 			if (bfs.exists(".zy2/mods/"..mod..".zy2m")) then
+				utils.debug_log(mod, ".zy2m")
 				return load_lua(bfs.getfile(".zy2/mods/"..mod..".zy2m"), "=.zy2/mods/"..mod..".zy2m")()
 			elseif (bfs.exists(".zy2/mods/"..mod.."/init.zy2m")) then
 				return load_lua(bfs.getfile(".zy2/mods/"..mod.."/init.zy2m"), "=.zy2/mods/"..mod.."/init.zy2m")()
@@ -106,7 +109,7 @@ th_a(function()
 				return load_lua(bfs.getfile(".zy2/lib/"..mod.."/init.zy2l"), "=.zy2/lib/"..mod.."/init.zy2l")
 			end
 		end)
-		local zycfg = bfs.getfile(".zy2/cfg.lua")
+		local zycfg = bfs.getcfg()
 		-- Config loaded, now we can do our shit.
 		local env = {
 			zorya = zy,
