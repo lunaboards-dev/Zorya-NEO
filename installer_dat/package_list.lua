@@ -1,5 +1,10 @@
 {
 	{name="zlan", cat="util", path="lib/util_zlan.zy2l"},
+	{name="cpio", cat="util", path="lib/util_cpio.zy2l"},
+	{name="urf", cat="util", path="lib/util_urf.zy2l"},
+	{name="vcomponent", cat="util", path="lib/util_vcomponent.zy2l"},
+	{name="oefiv2", cat="util", path="mods/util_oefiv2.zy2m"},
+	{name="oefiv1", cat="util", path="mods/util_oefiv1.zy2m"},
 	{name="openos", cat="loader", path="mods/loader_openos.zy2m"},
 	{name="fuchas", cat="loader", path="mods/loader_fuchas.zy2m"},
 	--{name="tsuki", cat="loader", path="mods/loader_tsuki.zy2m"},
