@@ -57,5 +57,4 @@ function utils.deepcopy(src, dest)
 	end
 	return dest
 end
-utils.debug_log("Zorya NEO Started!")
 builtins.utils = function() return utils end

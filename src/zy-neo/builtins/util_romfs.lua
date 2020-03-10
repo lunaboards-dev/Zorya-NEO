@@ -8,7 +8,6 @@ end
 
 function romfs.read(read, seek, close)
 	local sig = read(7)
-	utils.debug_log("SIGNATURE", sig, #sig)
 	assert(sig, "Read error!")
 	if sig ~= "romfs\1\0" then error(string.format("Invalid romfs (%.14x != %.14x)", string.unpack("i7", sig), string.unpack("i7", "romfs\1\0"))) end
 	local tbl = {}
@@ -19,21 +18,17 @@ function romfs.read(read, seek, close)
 		local fsize = readint(read, 2)
 		local exec = read(1)
 		tbl[#tbl+1] = {name = name, size = fsize, exec = exec == "x", pos = seek(0)}
-		utils.debug_log(name, fsize, exec)
 		seek(fsize)
 		lname = name
 	end
 	tbl[#tbl] = nil
-	utils.debug_log("ROMFS loaded!")
 	return setmetatable({tbl=tbl, read=read,seek=seek, close=close}, {__index=arc})
 end
 
 function arc:fetch(path)
 	for i=1, #self.tbl do
 		if self.tbl[i].name == path then
-			utils.debug_log("DEBUG", self.tbl[i].pos, self.tbl[i].size)
 			self.seek(self.tbl[i].pos-self.seek(0))
-			utils.debug_log("DEBUG2", self.seek(0))
 			return self.read(self.tbl[i].size)
 		end
 	end

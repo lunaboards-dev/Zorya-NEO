@@ -27,7 +27,6 @@ local function load_lua(src, ...)
 	if (src:sub(1, 4) == "\27ZLS") then
 		src = lzss_decompress(src:sub(5))
 	end
-	log("DECOMPRESS", src)
 	return load(src, ...)
 end
 
