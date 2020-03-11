@@ -21,6 +21,7 @@ end
 return function(addr, args)
 	--oefi.getExtensions().ZyNeo_ExecOEFIApp(addr, ".efi/fuchas.efi2", ...)
 	--We don't do that here.
+	local fuch = {}
 	fuch.env = oefi.getExtensions().ZyNeo_GetOEFIEnv(addr)
 	fuch.env.computer.supportsOEFI = function()
 		return true

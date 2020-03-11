@@ -12,6 +12,7 @@ return function(addr)
 	end
 	function computer.setBootAddress()end
 	--log(env, env.computer, env.computer.getBootAddress, env.computer.getBootAddress())
+	local old_dl = utils.debug_log
 	load(utils.readfile(fs.address, fs.open("init.lua")), "=init.lua", "t")()
 	krequire = kr
 end

@@ -49,7 +49,7 @@ local function checkCache(packetID)
 end
 
 --local realComputerPullSignal = computer.pullSignal
-thd.add(function()
+thd.add("minitel_handler", function()
  while true do
  local eventTab = {computer.pullSignal(0)}
  for k,v in pairs(net.hook) do

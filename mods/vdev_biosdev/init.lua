@@ -1,6 +1,6 @@
 local zy = krequire("zorya")
 local vdev = krequire("util_vcomponent")
-vdev.register("ZORYA_BIOS", "zybios", {
+vdev.register("ZORYA_BIOS", "zybios",
 	{
 		get_threads_info = function()
 			local threads = {}
@@ -8,13 +8,13 @@ vdev.register("ZORYA_BIOS", "zybios", {
 				local info = zy.lkthdi(i)
 				threads[i] = {
 					name = info[1],
-					deadline = info[6]
+					deadline = info[4]
 				}
 			end
 			return threads
 		end,
 		get_version = function()
-			return string.format("%f.%d", _ZVER, _ZPAT)
+			return string.format("%1.1f.%d", _ZVER, _ZPAT)
 		end,
 		get_git_revision = function()
 			return _ZGIT
@@ -25,6 +25,6 @@ vdev.register("ZORYA_BIOS", "zybios", {
 		get_version = "get_version():string -- Returns the Zorya NEO version.",
 		get_git_revision = "get_git_revision():string -- Returns the git revision of the build."
 	}
-})
+)
 
 return true

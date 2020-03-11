@@ -24,7 +24,14 @@ assert(bootfs.exists(".zy2/image.romfs"), "No boot image!")
 local romfs_file = assert(bootfs.open(".zy2/image.romfs", "rb"))
 
 local romfs_dev = romfs.read(function(a)
-	return bootfs.read(romfs_file, a)
+	local c = ""
+	local d
+	while a > 0 do
+		d = bootfs.read(romfs_file, a)
+		a = a - #d
+		c = c .. d
+	end
+	return c
 end, function(a)
 	return bootfs.seek(romfs_file, "cur", a)
 end, function()

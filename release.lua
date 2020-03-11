@@ -22,14 +22,14 @@ status("\n\nBuilding modules.")
 if (os.execute("stat mods 1>/dev/null 2>&1")) then
 	for l in io.popen("ls mods"):lines() do
 		status("MOD\t"..l)
-		os.execute("zsh -c 'cd mods/"..l.."; luacomp init.lua -mluamin | lua ../../utils/zlua.lua > ../../pkg/mods/"..l..".zy2m'")
+		os.execute("zsh -c 'cd mods/"..l.."; luacomp init.lua | lua ../../utils/zlua.lua > ../../pkg/mods/"..l..".zy2m'")
 	end
 end
 status("Module build complete.\n\nBuilding libraries.")
 if (os.execute("stat lib 1>/dev/null 2>&1")) then
 	for l in io.popen("ls lib"):lines() do
 		status("LIB\t"..l)
-		os.execute("zsh -c 'cd lib/"..l.."; luacomp init.lua -mluamin | lua ../../utils/zlua.lua > ../../pkg/lib/"..l..".zy2l'")
+		os.execute("zsh -c 'cd lib/"..l.."; luacomp init.lua | lua ../../utils/zlua.lua > ../../pkg/lib/"..l..".zy2l'")
 	end
 end
 status("Library build complete.\n\nBuilding installer...")

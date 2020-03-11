@@ -29,31 +29,33 @@ function menu.add(text, func)
 end
 
 function menu.draw()
+	
 	local w, h = gpu.getViewport()
-	local cls = function()gpu.fill(1,1,w,h," ")end
-	gpu.setBackground(bg)
-	gpu.setForeground(fg)
-	cls()
-	--Draw some things
-	local namestr = _BIOS .. " " .. string.format("%.1f.%d %s", _ZVER, _ZPAT, _ZGIT)
-	gpu.set((w/2)-(#namestr/2), 1, namestr)
-	gpu.set(1, 2, border_chars[1])
-	gpu.set(2, 2, border_chars[2]:rep(w-2))
-	gpu.set(w, 2, border_chars[3])
-	for i=1, h-6 do
-		gpu.set(1, i+2, border_chars[4])
-		gpu.set(w, i+2, border_chars[4])
-	end
-	gpu.set(1, h-3, border_chars[5])
-	gpu.set(2, h-3, border_chars[2]:rep(w-2))
-	gpu.set(w, h-3, border_chars[6])
-	gpu.set(1, h-1, "Use ↑ and ↓ keys to select which entry is highlighted.")
-	gpu.set(1, h, "Use ENTER to boot the selected entry.")
 	local stime = computer.uptime()
 	local autosel = true
 	local ypos = 1
 	local sel = 1
 	local function redraw()
+		local w, h = gpu.getViewport()
+		local cls = function()gpu.fill(1,1,w,h," ")end
+		gpu.setBackground(bg)
+		gpu.setForeground(fg)
+		cls()
+		--Draw some things
+		local namestr = _BIOS .. " " .. string.format("%.1f.%d %s", _ZVER, _ZPAT, _ZGIT)
+		gpu.set((w/2)-(#namestr/2), 1, namestr)
+		gpu.set(1, 2, border_chars[1])
+		gpu.set(2, 2, border_chars[2]:rep(w-2))
+		gpu.set(w, 2, border_chars[3])
+		for i=1, h-6 do
+			gpu.set(1, i+2, border_chars[4])
+			gpu.set(w, i+2, border_chars[4])
+		end
+		gpu.set(1, h-3, border_chars[5])
+		gpu.set(2, h-3, border_chars[2]:rep(w-2))
+		gpu.set(w, h-3, border_chars[6])
+		gpu.set(1, h-1, "Use ↑ and ↓ keys to select which entry is highlighted.")
+		gpu.set(1, h, "Use ENTER to boot the selected entry.")
 		gpu.setBackground(bg)
 		gpu.setForeground(fg)
 		gpu.fill(1, h-2, w, 1, " ")

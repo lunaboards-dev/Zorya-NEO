@@ -72,11 +72,11 @@ sys.add_lib("zorya", (function()
 	end
 
 	function zy.lkthdn()
-		return #thd.getthreads()
+		return #thd.get_threads()
 	end
 
 	function zy.lkthdi(i)
-		return thd.getthreads()[i][1]
+		return thd.get_threads()[i]
 	end
 	return zy
 end)())
@@ -93,7 +93,7 @@ th_a(function()
 				utils.debug_log(mod, ".zy2m")
 				return load_lua(bfs.getfile(".zy2/mods/"..mod..".zy2m"), "=.zy2/mods/"..mod..".zy2m")()
 			elseif (bfs.exists(".zy2/mods/"..mod.."/init.zy2m")) then
-				return load_lua(bfs.getfile(".zy2/mods/"..mod.."/init.zy2m"), "=.zy2/mods/"..mod.."/init.zy2m")()
+				return assert(load_lua(bfs.getfile(".zy2/mods/"..mod.."/init.zy2m"), "=.zy2/mods/"..mod.."/init.zy2m"))()
 			end
 		end)
 		sys.add_search(function(mod)
