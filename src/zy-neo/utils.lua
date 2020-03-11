@@ -1,7 +1,7 @@
 local utils = {}
 
 function utils.debug_log(...)
-	local sb = component.list("sandbox")() or component.list("ocemu")()
+	local sb = component.list("sandbox")() or component.list("ocemu")() 
 	if (sb) then component.invoke(sb, "log", ...) end
 end
 
