@@ -8,7 +8,8 @@ vdev.register("ZORYA_BIOS", "zybios",
 				local info = zy.lkthdi(i)
 				threads[i] = {
 					name = info[1],
-					deadline = info[4]
+					deadline = info[4],
+					delta = info.delta
 				}
 			end
 			return threads

@@ -6,6 +6,7 @@ local eeprom = {}
 local lua_code = [[
 --#include "luabios.lua"
 ]]
+--#include "crc32.lua"
 local function generate_vbios(f_, path)
 	local fs = comp.proxy(f_)
 	if not fs.exists(path) then
@@ -64,7 +65,7 @@ local function generate_vbios(f_, path)
 		end,
 		getChecksum = function()
 
-			return 0/0
+			return crc32(tbl.get())
 		end,
 		makeReadonly = function()
 

@@ -206,4 +206,10 @@ function vcomponent.install(env)
 	end
 end
 
+function vcomponent.global()
+	for k, v in pairs(_component) do
+		component[k] = v
+	end
+end
+
 return vcomponent

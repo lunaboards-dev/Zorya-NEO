@@ -13,7 +13,7 @@ os.execute("mkdir -p pkg/bios")
 
 status("Building EEPROM...")
 os.execute("luacomp src/loader.lua -O pkg/bios/managed.bios")
-os.execute("luacomp src/zy-neo/zinit.lua -O debug.lua")
+--os.execute("luacomp src/zy-neo/zinit.lua -O debug.lua")
 if (os.execute("[[ $(stat --printf=%s pkg/bios/managed.bios) > 4096 ]]")) then
 	io.stderr:write("WARNING: BIOS is over 4KiB!\n")
 end
@@ -22,14 +22,14 @@ status("\n\nBuilding modules.")
 if (os.execute("stat mods 1>/dev/null 2>&1")) then
 	for l in io.popen("ls mods"):lines() do
 		status("MOD\t"..l)
-		os.execute("zsh -c 'cd mods/"..l.."; luacomp init.lua | lua ../../utils/zlua.lua > ../../pkg/mods/"..l..".zy2m'")
+		os.execute("sh -c 'cd mods/"..l.."; luacomp -mluamin init.lua | lua ../../utils/zlua.lua > ../../pkg/mods/"..l..".zy2m'")
 	end
 end
 status("Module build complete.\n\nBuilding libraries.")
 if (os.execute("stat lib 1>/dev/null 2>&1")) then
 	for l in io.popen("ls lib"):lines() do
 		status("LIB\t"..l)
-		os.execute("zsh -c 'cd lib/"..l.."; luacomp init.lua | lua ../../utils/zlua.lua > ../../pkg/lib/"..l..".zy2l'")
+		os.execute("sh -c 'cd lib/"..l.."; luacomp -mluamin init.lua | lua ../../utils/zlua.lua > ../../pkg/lib/"..l..".zy2l'")
 	end
 end
 status("Library build complete.\n\nBuilding installer...")

@@ -10,6 +10,7 @@
 	{name="vbios", cat="vdev", path="mods/vdev_vbios.zy2m"},
 	{name="biosdev", cat="vdev", path="mods/vdev_biosdev.zy2m"},
 	{name="searchpaths", cat="util", path="mods/util_searchpaths.zy2m"},
+	{name="vfs", cat="core", path="mods/vfs.zy2m"},
 	--{name="tsuki", cat="loader", path="mods/loader_tsuki.zy2m"},
 	--{name="romfs", cat="util", path="mods/util_romfs.zy2m"},
 	{name="cpio", cat="util", path="lib/util_cpio.zy2l"},

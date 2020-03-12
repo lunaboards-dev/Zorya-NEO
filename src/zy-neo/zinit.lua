@@ -14,7 +14,7 @@ local computer = computer
 local booted = false
 local zcfg = {}
 function log(...)
-	local c = component.list("ocemu")() or component.list("sandbox")())
+	local c = component.list("ocemu")() or component.list("sandbox")()
 	if c then
 		component.proxy(c).log(...)
 	end

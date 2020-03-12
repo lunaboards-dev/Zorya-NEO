@@ -50,6 +50,7 @@ function thd.run()
 	for i=1, #threads do
 		if (threads[i][4] <= computer.uptime() or #last_sig > 0) then
 			if (c_status(threads[i][2]) ~= "running") then
+				local dt = computer.uptime()
 				local er, dl = c_resume(threads[i][2], unpack(last_sig))
 				if (not er) then error(threads[i][1]..": "..dl) end
 				if (dl == "k") then
@@ -57,6 +58,7 @@ function thd.run()
 				end
 				dl = computer.uptime() + (dl or math.huge)
 				threads[i][4] = dl
+				threads[i].delta = computer.uptime() - dt
 				sigs[#sigs+1] = {ps(0)}
 			end
 		end
