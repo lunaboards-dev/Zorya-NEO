@@ -268,6 +268,11 @@ function arc:fetch(path)
 	return self.fs.read(self.h, obj.size)
 end
 
+function arc:exists(path)
+	local obj = path_to_obj(path)
+	return obj.type ~= "eoh"
+end
+
 function arc:close()
 	self.cache = nil
 	self.fs.close(self.h)

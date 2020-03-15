@@ -18,10 +18,11 @@ function fuchas:boot()
 	while true do if computer.pullSignal() == "fuchas_dead" then break end end
 end
 
-return function(addr, args)
+return function(addr)
 	--oefi.getExtensions().ZyNeo_ExecOEFIApp(addr, ".efi/fuchas.efi2", ...)
 	--We don't do that here.
 	local fuch = {}
+	fuch.args = {}
 	fuch.env = oefi.getExtensions().ZyNeo_GetOEFIEnv(addr)
 	fuch.env.computer.supportsOEFI = function()
 		return true

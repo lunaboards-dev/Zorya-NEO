@@ -70,13 +70,29 @@ function arc:fetch(path)
 	return nil, "file not found"
 end
 
+function arc:exists(path)
+	for i=1, #self.tbl do
+		if (self.tbl[i].name == path) then
+			return true
+		end
+	end
+	return false
+end
+
 function arc:close()
 	self.fs.close(self.handle)
 	self.tbl = {}
 end
 
 function arc:list_dir(path)
-	--soon:tm:
+	if path:sub(#path) ~= "/" then path = path .. "/" end
+	local ent = {}
+	for i=1, #self.tbl do
+		if (self.tbl[i].name:sub(1, #path) == path and not self.tbl[i].name:find("/", #path+1, false)) then
+			ent[#ent+1] = self.tbl[i].name
+		end
+	end
+	return ent
 end
 
 return cpio
