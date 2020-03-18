@@ -19,9 +19,9 @@ local cfg = component.proxy(component.list("eeprom")()).getData()
 local baddr = cfg:sub(1, 36)
 local bootfs = component.proxy(baddr)
 
-assert(bootfs.exists(".zy2/image.romfs"), "No boot image!")
+assert(bootfs.exists(".zy2/image.tsar"), "No boot image!")
 
-local romfs_file = assert(bootfs.open(".zy2/image.romfs", "rb"))
+local romfs_file = assert(bootfs.open(".zy2/image.tsar", "rb"))
 
 local romfs_dev = romfs.read(function(a)
 	local c = ""

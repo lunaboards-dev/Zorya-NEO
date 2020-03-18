@@ -48,12 +48,17 @@ local tbl = {}
 
 local pos = 1
 local function read(n)
-	local d = dat:sub(pos, pos+n)
+	local d = dat:sub(pos, pos+n-1)
 	pos = pos + n
 	return d
 end
 
-local function readint(amt, rev)
+local function seek(n)
+	pos = pos + n
+	return pos
+end
+
+--[[local function readint(amt, rev)
 	local tmp = 0
 	for i=(rev and amt) or 1, (rev and 1) or amt, (rev and -1) or 1 do
 		tmp = tmp | (read(1):byte() << ((i-1)*8))
@@ -95,6 +100,39 @@ while true do
 	end
 	tbl[#tbl+1] = dent
 end
+]]
+
+local magic = 0x5f7d
+local magic_rev = 0x7d5f
+local header_fmt = "I2I2I2I2I2I6I6"
+local en = string.unpack("=I2", string.char(0x7d, 0x5f)) == magic -- true = LE, false = BE
+local function get_end(e)
+	return (e and "<") or ">"
+end
+local function read_header(dat)
+	local e = get_end(en)
+	local m = string.unpack(e.."I2", dat)
+	if m ~= magic and m ~= magic_rev then return nil, "bad magic" end
+	if m ~= magic then
+		e = get_end(not en)
+	end
+	local ent = {}
+	ent.magic, ent.namesize, ent.mode, ent.uid, ent.gid, ent.filesize, ent.mtime = string.unpack(e..header_fmt, dat)
+	return ent
+end
+
+local lname = ""
+while lname ~= "TRAILER!!!" do
+	local dat = read(22)
+	local e = read_header(dat)
+	e.name = read(e.namesize)
+	e.pos = seek(e.namesize & 1)
+	seek(e.filesize + (e.filesize & 1))
+	lname = e.name
+	if lname ~= "TRAILER!!!" then
+		tbl[#tbl+1] = e
+	end
+end
 
 local unpack = unpack or table.unpack
 
@@ -103,3 +141,5 @@ for i=1, #tbl do
 		load(dat:sub(tbl[i].pos, tbl[i].pos+tbl[i].filesize-1))(tbl, dat, unpack(arg))
 	end
 end
+
+error("Init not found.")

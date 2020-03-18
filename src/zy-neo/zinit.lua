@@ -36,7 +36,7 @@ end
 local builtins = {}
 --#include "src/zy-neo/utils.lua"
 
---#include "src/zy-neo/builtins/util_romfs.lua"
+--#include "src/zy-neo/builtins/util_tsar.lua"
 
 sys.add_lib("zorya", (function()
 
@@ -54,7 +54,7 @@ sys.add_lib("zorya", (function()
 
 	local loaded_mods = {}
 
-	loaded_mods.util_romfs = romfs
+	loaded_mods.util_tsar = tsar
 
 	function zy.loadmod(mod)
 		if (loaded_mods[mod]) then return loaded_mods[mod] end

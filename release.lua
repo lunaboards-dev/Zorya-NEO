@@ -13,7 +13,7 @@ os.execute("mkdir -p pkg/bios")
 
 status("Building EEPROM...")
 os.execute("luacomp src/loader.lua -O pkg/bios/managed.bios")
---os.execute("luacomp src/zy-neo/zinit.lua -O debug.lua")
+os.execute("luacomp src/zy-neo/zinit.lua -O debug.lua")
 if (os.execute("[[ $(stat --printf=%s pkg/bios/managed.bios) > 4096 ]]")) then
 	io.stderr:write("WARNING: BIOS is over 4KiB!\n")
 end
@@ -36,6 +36,6 @@ status("Library build complete.\n\nBuilding installer...")
 os.execute("cp utils/ser.lua pkg/init.lua")
 os.execute("cp -r installer_dat pkg")
 status("Packing installer...")
-os.execute("cd pkg; find * -depth | cpio -o | lua ../utils/mkselfextract.lua > ../zorya-neo-installer.lua")
+os.execute("cd pkg; find * -depth | lua ../utils/make_tsar.lua | lua ../utils/mkselfextract.lua > ../zorya-neo-installer.lua")
 status("Build complete.")
 status(string.format("Took %ds.", os.time()-start))

@@ -111,22 +111,80 @@ fs.makeDirectory(".zy2")
 fs.makeDirectory(".zy2/mods")
 fs.makeDirectory(".zy2/lib")
 
-local romfs = fs.open(".zy2/image.romfs", "w")
-fs.write(romfs, "romfs\1\0")
+local romfs = fs.open(".zy2/image.tsar", "w")
+--fs.write(romfs, "romfs\1\0")
+
+local modes = {
+	["fifo"] = 1,
+	["char device"] = 2,
+	["directory"] = 4,
+	["block device"] = 6,
+	["file"] = 8,
+	["link"] = 0xA,
+	["socket"] = 0xC
+}
+local function getperm(ftype, perm)
+	local md = 0
+	for i=1, 9 do
+		if (perm:sub(i,i) ~= "-") then
+			md = md | (1 << (i-1))
+		end
+	end
+	return md | (modes[ftype] << 12)
+end
+
+function makeDirectory(path)
+	local ent = {
+		name = path,
+		namesize = #path,
+		magic = 0x5f7d,
+		mode = getperm("directory", "r-xr-xr-x"),
+		uid = 0,
+		gid = 0,
+		filesize = 0,
+		mtime = os.time()
+	}
+	fs.write(romfs, string.pack("=I2I2I2I2I2I6I6", ent.magic, ent.namesize, ent.mode, ent.uid, ent.gid, ent.filesize, ent.mtime))
+	fs.write(romfs, path)
+end
+
+makeDirectory(".zy2")
+makeDirectory(".zy2/mods")
+makeDirectory(".zy2/lib")
 
 function writeFile(path, data)
 	--local hand = fs.open(path, "w")
 	--fs.write(hand, data)
 	--fs.close(hand)
-	fs.write(romfs, string.char(#path)..path)
-	local ext = path:sub(#path-2)
-	fs.write(romfs, string.pack("<i2", #data))
-	if (ext == "lua" or ext == "z2l" or ext == "z2y") then
-		fs.write(romfs, "x")
-	else
-		fs.write(romfs, "-")
+	--fs.write(romfs, string.char(#path)..path)
+	--local ext = path:sub(#path-2)
+	--fs.write(romfs, string.pack("<i2", #data))
+	--if (ext == "lua" or ext == "z2l" or ext == "z2y") then
+	--	fs.write(romfs, "x")
+	--else
+	--	fs.write(romfs, "-")
+	--end
+	--fs.write(romfs, data)
+	local ent = {
+		name = path,
+		namesize = #path,
+		magic = 0x5f7d,
+		mode = getperm("file", ((ext == "lua" or ext == "z2l" or ext == "z2y") and "r-xr-xr-x") or "rw-r--r--"),
+		uid = 0,
+		gid = 0,
+		filesize = #data,
+		mtime = os.time()
+	}
+	fs.write(romfs, string.pack("=I2I2I2I2I2I6I6", ent.magic, ent.namesize, ent.mode, ent.uid, ent.gid, ent.filesize, ent.mtime))
+	fs.write(romfs, path)
+	if ent.namesize & 1 > 0 then
+		io.stdout:write("\0")
 	end
 	fs.write(romfs, data)
+	if ent.filesize & 1 > 0 then
+		io.stdout:write("\0")
+		size = size+1
+	end
 end
 
 setStatus("Getting file list...")
