@@ -53,7 +53,7 @@ function arc:close()
 	self.close()
 end
 
-local tsar = {
+return {
 	read = function(read, seek, close)
 		local tbl = {}
 		local lname = ""

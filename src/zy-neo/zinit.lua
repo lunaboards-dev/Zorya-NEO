@@ -36,7 +36,9 @@ end
 local builtins = {}
 --#include "src/zy-neo/utils.lua"
 
+local tsar = load([[
 --#include "src/zy-neo/builtins/util_tsar.lua"
+]])()
 
 sys.add_lib("zorya", (function()
 
