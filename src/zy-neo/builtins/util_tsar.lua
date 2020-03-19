@@ -63,11 +63,12 @@ local tsar = {
 			e.name = read(e.namesize)
 			e.pos = seek(e.namesize & 1)
 			seek(e.filesize + (e.filesize & 1))
+			utils.debug_log(e.name, e.namesize, e.filesize, e.pos)
 			lname = e.name
 			if lname ~= "TRAILER!!!" then
 				tbl[#tbl+1] = e
 			end
 		end
-		return setmetatable({tbl = tbl, read = read, seek = seek, close = close}, {__index=tsar})
+		return setmetatable({tbl = tbl, read = read, seek = seek, close = close}, {__index=arc})
 	end
 }

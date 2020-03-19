@@ -146,6 +146,9 @@ function makeDirectory(path)
 	}
 	fs.write(romfs, string.pack("=I2I2I2I2I2I6I6", ent.magic, ent.namesize, ent.mode, ent.uid, ent.gid, ent.filesize, ent.mtime))
 	fs.write(romfs, path)
+	if ent.namesize & 1 > 0 then
+		fs.write(romfs, "\0")
+	end
 end
 
 makeDirectory(".zy2")
@@ -165,6 +168,8 @@ function writeFile(path, data)
 	--	fs.write(romfs, "-")
 	--end
 	--fs.write(romfs, data)
+
+	local ext = path:sub(#path-2)
 	local ent = {
 		name = path,
 		namesize = #path,
@@ -178,12 +183,11 @@ function writeFile(path, data)
 	fs.write(romfs, string.pack("=I2I2I2I2I2I6I6", ent.magic, ent.namesize, ent.mode, ent.uid, ent.gid, ent.filesize, ent.mtime))
 	fs.write(romfs, path)
 	if ent.namesize & 1 > 0 then
-		io.stdout:write("\0")
+		fs.write(romfs, "\0")
 	end
 	fs.write(romfs, data)
 	if ent.filesize & 1 > 0 then
-		io.stdout:write("\0")
-		size = size+1
+		fs.write(romfs, "\0")
 	end
 end
 

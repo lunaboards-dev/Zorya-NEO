@@ -139,6 +139,7 @@ local unpack = unpack or table.unpack
 for i=1, #tbl do
 	if (tbl[i].name == "init.lua") then
 		load(dat:sub(tbl[i].pos, tbl[i].pos+tbl[i].filesize-1))(tbl, dat, unpack(arg))
+		if os.exit then os.exit(0) else return end
 	end
 end
 

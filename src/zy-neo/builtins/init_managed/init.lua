@@ -1,3 +1,4 @@
+_ZLOADER = "managed"
 local readfile=function(f,h)
 	local b=""
 	local d,r=f.read(h,math.huge)
@@ -23,7 +24,7 @@ assert(bootfs.exists(".zy2/image.tsar"), "No boot image!")
 
 local romfs_file = assert(bootfs.open(".zy2/image.tsar", "rb"))
 
-local romfs_dev = romfs.read(function(a)
+local romfs_dev = tsar.read(function(a)
 	local c = ""
 	local d
 	while a > 0 do

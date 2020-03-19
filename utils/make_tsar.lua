@@ -17,7 +17,7 @@ local modes = {
 local function getperm()
 	local md = 0
 	for i=1, 9 do
-		if (attr.permissions:sub(i,i) ~= "-") then
+		if (attr.permissions:sub(10-i,10-i) ~= "-") then
 			md = md | (1 << (i-1))
 		end
 	end
