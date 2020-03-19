@@ -59,13 +59,13 @@ local tsar = {
 		local lname = ""
 		while lname ~= "TRAILER!!!" do
 			local dat = read(22)
-			local e = read_header(dat)
-			e.name = read(e.namesize)
-			e.pos = seek(e.namesize & 1)
-			seek(e.filesize + (e.filesize & 1))
-			lname = e.name
+			local et = read_header(dat)
+			et.name = read(et.namesize)
+			et.pos = seek(et.namesize & 1)
+			seek(et.filesize + (et.filesize & 1))
+			lname = et.name
 			if lname ~= "TRAILER!!!" then
-				tbl[#tbl+1] = e
+				tbl[#tbl+1] = et
 			end
 		end
 		return setmetatable({tbl = tbl, read = read, seek = seek, close = close}, {__index=arc})
