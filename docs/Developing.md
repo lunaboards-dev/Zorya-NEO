@@ -1,0 +1,2 @@
+# Development tips
+Loading libraries is done with `krequire`. Be careful of this. Also, you have to load modules through the `zorya` library. Also, uncaught thread errors will crash the system. Be mindful of that.
