@@ -4,9 +4,10 @@ local fs = require("filesystem")
 local comp = require("component")
 local function dl(url)
 	local dat = ""
-	for chunk in internet.request(url) do
+	for chunk in inet.request(url) do
 		dat = dat .. chunk
 	end
+	return dat
 end
 
 local function writefile(p2, dat)
@@ -108,12 +109,14 @@ print("Downloading zorya-neo-update.tsar...")
 for i=1, #rdat.assets do
 	if (rdat.assets[i].name == "zorya-neo-update.tsar") then
 		arc = dl(rdat.assets[i].browser_download_url)
-		goto arc_downloaded
+		goto arcdl
 	end
 end
 io.stderr:write("ERROR: zorya-neo-update.tsar not found!\n")
-return
-::arc_downloaded::
+os.exit(1)
+
+::arcdl::
+
 local update = tsar.read(_r, _s, function() end)
 for ent in fs.list("/etc/zorya-neo/mods") do
 	if (update:exists("mods/"..ent)) then
