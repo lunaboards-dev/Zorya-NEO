@@ -4,3 +4,4 @@ luapreproc.lua
 zorya-neo-installer.lua
 zorya-neo-utils-installer.lua
 bsrc/**
+release/**

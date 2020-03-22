@@ -1,14 +1,11 @@
-local args = {...}
-local tbl = args[1]
-local dat = args[2]
-table.remove(args, 1)
-table.remove(args, 1)
-
-local function getfile(path)
-	for i=1, #tbl do
-		if (tbl[i].name == path) then
-			return dat:sub(tbl[i].pos, tbl[i].pos+tbl[i].filesize-1)
-		end
+local inet = require("internet")
+local json = require("json")
+local fs = require("filesystem")
+local comp = require("component")
+local function dl(url)
+	local dat = ""
+	for chunk in internet.request(url) do
+		dat = dat .. chunk
 	end
 end
 
@@ -16,11 +13,6 @@ local function writefile(p2, dat)
 	local f = io.open(p2, "wb")
 	f:write(dat)
 	f:close()
-end
-
-if (debug.debug) then
-	print("This software cannot be run on a normal computer. This is only for OpenOS.")
-	os.exit(1)
 end
 
 local magic = 0x5f7d
@@ -97,44 +89,52 @@ local tsar = {
 	end
 }
 
-local fs = require("filesystem")
-print("Installing Zorya NEO utils.")
-fs.makeDirectory("/etc/zorya-neo")
-fs.makeDirectory("/etc/zorya-neo/mods")
-fs.makeDirectory("/etc/zorya-neo/lib")
-fs.makeDirectory("/etc/zorya-neo/config.d")
-fs.makeDirectory("/etc/zorya-neo/initramfs.d")
-print("Installing utils to /usr")
-fs.makeDirectory("/usr/bin")
-writefile("/usr/bin/zyneo-gencfg.lua", getfile("OpenOS/zyneo-gencfg.lua"))
-writefile("/usr/bin/zyneo-geninitramfs.lua", getfile("OpenOS/zyneo-geninitramfs.lua"))
-writefile("/usr/bin/zyneo-update.lua", getfile("OpenOS/zyneo-update.lua"))
-print("Installing scripts...")
-for i=1, #tbl do
-	if tbl[i].name:sub(1, 16) == "OpenOS/config.d/" then
-		writefile("/etc/zorya-neo/config.d/"..tbl[i].name:sub(17), getfile(tbl[i].name))
-	elseif tbl[i].name:sub(1, 19) == "OpenOS/initramfs.d/" then
-		writefile("/etc/zorya-neo/initramfs.d/"..tbl[i].name:sub(20), getfile(tbl[i].name))
+local arc = ""
+local arc_p = 1
+
+local function _r(a)
+	local dat = arc:sub(arc_p, arc_p+a-1)
+	arc_p = arc_p + a
+	return dat
+end
+
+local function _s(a)
+	arc_p = arc_p + a
+	return arc_p
+end
+local rdat = json.decode(dl("https://api.github.com/repos/Adorable-Catgirl/Zorya-NEO/releases"))[1]
+print("Newest release: "..rdat.tag_name)
+print("Downloading zorya-neo-update.tsar...")
+for i=1, #rdat.assets do
+	if (rdat.assets[i].name == "zorya-neo-update.tsar") then
+		arc = dl(rdat.assets[i].browser_download_url)
+		goto arc_downloaded
 	end
 end
-print("Extracting image.tsar...")
-local t = io.open("/.zy2/image.tsar", "rb")
-local arc = tsar.read(function(a)
-	return t:read(a)
-end, function(a)
-	return t:seek("cur", a)
-end, function()
-	return t:close()
-end)
-local lst = arc:list(".zy2/mods")
-for i=1, #lst do
-	print(lst[i])
-	writefile("/etc/zorya-neo/mods/"..lst[i]:sub(10), arc:fetch(lst[i]))
+io.stderr:write("ERROR: zorya-neo-update.tsar not found!\n")
+return
+::arc_downloaded::
+local update = tsar.read(_r, _s, function() end)
+for ent in fs.list("/etc/zorya-neo/mods") do
+	if (update:exists("mods/"..ent)) then
+		writefile("/etc/zorya-neo/mods/"..ent, update:fetch("mods/"..ent))
+	end
 end
-local lst = arc:list(".zy2/lib")
-for i=1, #lst do
-	print(lst[i])
-	writefile("/etc/zorya-neo/lib/"..lst[i]:sub(9), arc:fetch(lst[i]))
+
+for ent in fs.list("/etc/zorya-neo/lib") do
+	if (update:exists("lib/"..ent)) then
+		writefile("/etc/zorya-neo/lib/"..ent, update:fetch("lib/"..ent))
+	end
 end
-arc:close()
-print("Installation complete.")
+
+if (comp.eeprom.address == "vdev-ZY_VBIOS") then
+	io.stderr:write("WARNING: Updating Zorya NEO in a vBIOS does not update Zorya NEO completely!\n")
+else
+	print("Flashing EEPROM! Do not turn off the computer!")
+	comp.eeprom.set(update:fetch("bios/managed.bios"))
+	print("Flashing complete.")
+end
+
+print("Running zyneo-geninitramfs to finish the update...")
+os.execute("zyneo-geninitramfs")
+print("Update complete. Please restart your computer.")
