@@ -112,7 +112,7 @@ end
 local function read_header(dat)
 	local e = get_end(en)
 	local m = string.unpack(e.."I2", dat)
-	if m ~= magic and m ~= magic_rev then return nil, "bad magic" end
+	if m ~= magic and m ~= magic_rev then return nil end
 	if m ~= magic then
 		e = get_end(not en)
 	end
@@ -124,7 +124,7 @@ end
 local lname = ""
 while lname ~= "TRAILER!!!" do
 	local dat = read(22)
-	local e = assert(read_header(dat))
+	local e = assert(read_header(dat), "bad magic")
 	e.name = read(e.namesize)
 	e.pos = seek(e.namesize & 1)
 	seek(e.filesize + (e.filesize & 1))
