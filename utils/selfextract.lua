@@ -124,7 +124,7 @@ end
 local lname = ""
 while lname ~= "TRAILER!!!" do
 	local dat = read(22)
-	local e = read_header(dat)
+	local e = assert(read_header(dat))
 	e.name = read(e.namesize)
 	e.pos = seek(e.namesize & 1)
 	seek(e.filesize + (e.filesize & 1))
