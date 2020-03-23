@@ -118,13 +118,14 @@ local function read_header(dat)
 	end
 	local ent = {}
 	ent.magic, ent.namesize, ent.mode, ent.uid, ent.gid, ent.filesize, ent.mtime = string.unpack(e..header_fmt, dat)
-	return ent
+	return ent, ""
 end
 
 local lname = ""
 while lname ~= "TRAILER!!!" do
 	local dat = read(22)
-	local e = read_header(dat)
+	local e,r = read_header(dat)
+	if r ~= "" then print(r) return end
 	e.name = read(e.namesize)
 	e.pos = seek(e.namesize & 1)
 	seek(e.filesize + (e.filesize & 1))
