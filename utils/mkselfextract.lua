@@ -78,7 +78,8 @@ end
 
 local tmp = os.tmpname()
 local h = io.popen("luacomp ../utils/selfextract.lua -O"..tmp, "w")
-h:write(mkstr(lzss_compress(f)))
+--h:write(mkstr(lzss_compress(f)))
+h:write(mkstr(f))
 h:close()
 local f = io.open(tmp, "rb")
 io.stdout:write(f:read("*a"))

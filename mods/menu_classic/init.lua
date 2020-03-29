@@ -37,25 +37,6 @@ function menu.draw()
 	local sel = 1
 	local function redraw()
 		local w, h = gpu.getViewport()
-		local cls = function()gpu.fill(1,1,w,h," ")end
-		gpu.setBackground(bg)
-		gpu.setForeground(fg)
-		cls()
-		--Draw some things
-		local namestr = _BIOS .. " " .. string.format("%.1f.%d %s", _ZVER, _ZPAT, _ZGIT)
-		gpu.set((w/2)-(#namestr/2), 1, namestr)
-		gpu.set(1, 2, border_chars[1])
-		gpu.set(2, 2, border_chars[2]:rep(w-2))
-		gpu.set(w, 2, border_chars[3])
-		for i=1, h-6 do
-			gpu.set(1, i+2, border_chars[4])
-			gpu.set(w, i+2, border_chars[4])
-		end
-		gpu.set(1, h-3, border_chars[5])
-		gpu.set(2, h-3, border_chars[2]:rep(w-2))
-		gpu.set(w, h-3, border_chars[6])
-		gpu.set(1, h-1, "Use ↑ and ↓ keys to select which entry is highlighted.")
-		gpu.set(1, h, "Use ENTER to boot the selected entry.")
 		gpu.setBackground(bg)
 		gpu.setForeground(fg)
 		gpu.fill(1, h-2, w, 1, " ")
@@ -84,7 +65,30 @@ function menu.draw()
 			gpu.set(2, i+2, short)
 		end
 	end
-	redraw()
+	local function full_redraw()
+		local w, h = gpu.getViewport()
+		local cls = function()gpu.fill(1,1,w,h," ")end
+		gpu.setBackground(bg)
+		gpu.setForeground(fg)
+		cls()
+		--Draw some things
+		local namestr = _BIOS .. " " .. string.format("%.1f.%d %s", _ZVER, _ZPAT, _ZGIT)
+		gpu.set((w/2)-(#namestr/2), 1, namestr)
+		gpu.set(1, 2, border_chars[1])
+		gpu.set(2, 2, border_chars[2]:rep(w-2))
+		gpu.set(w, 2, border_chars[3])
+		for i=1, h-6 do
+			gpu.set(1, i+2, border_chars[4])
+			gpu.set(w, i+2, border_chars[4])
+		end
+		gpu.set(1, h-3, border_chars[5])
+		gpu.set(2, h-3, border_chars[2]:rep(w-2))
+		gpu.set(w, h-3, border_chars[6])
+		gpu.set(1, h-1, "Use ↑ and ↓ keys to select which entry is highlighted.")
+		gpu.set(1, h, "Use ENTER to boot the selected entry.")
+		redraw()
+	end
+	full_redraw()
 	sel = 1
 	while true do
 		local sig, _, key, code = computer.pullSignal(0.01)
@@ -110,10 +114,12 @@ function menu.draw()
 				gpu.setBackground(0)
 				gpu.setForeground(0xFFFFFF)
 				entries[sel][2]()
+				full_redraw()
 			end
 		end
 		if (((computer.uptime()-stime) >= timeout) and autosel) then
 			entries[sel][2]()
+			full_redraw()
 		end
 		redraw()
 	end
