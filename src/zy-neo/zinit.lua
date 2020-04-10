@@ -1,7 +1,7 @@
 local lzss_decompress = ...
 --Zorya NEO itself.
 _BIOS = "Zorya NEO"
-_ZVSTR = "2.0"
+_ZVSTR = "2.0-rc4"
 _ZVER = 2.0
 _ZPAT = 0
 _ZGIT = "$[[git rev-parse --short HEAD]]"
