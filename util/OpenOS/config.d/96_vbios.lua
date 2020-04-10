@@ -1,9 +1,6 @@
 local cfgadd = ...
-local addr = require("component").eeprom.getData()
+--local addr = require("component").eeprom.getData()
 local fs = require("filesystem")
-if not fs.exists("/.zy2/vbios/") then
-	return
-end
 cfgadd([[
 do
 	local function add_bios(drive, path)
@@ -16,8 +13,10 @@ do
 		end)
 	end
 ]])
-for ent in fs.list("/.zy2/vbios") do
-	cfgadd(string.format([[	add_bios("%s",  ".zy2/vbios/%s")]].."\n", addr, ent:sub(1, #ent-1)))
+for ent in fs.list("/etc/zorya-neo/vbios/") do
+	local prox, path = fs.get("/etc/zorya-neo/vbios/"..ent)
+	local rpath = ("/etc/zorya-neo/vbios/"..ent):sub(#path+1)
+	cfgadd(string.format([[	add_bios("%s",  "%s")]].."\n", prox.address, rpath:sub(1, #rpath-1)))
 end
 cfgadd[[
 end

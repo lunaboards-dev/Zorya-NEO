@@ -24,7 +24,11 @@ status("\n\nBuilding modules.")
 if (os.execute("stat mods 1>/dev/null 2>&1")) then
 	for l in io.popen("ls mods"):lines() do
 		status("MOD\t"..l)
-		os.execute("sh -c 'cd mods/"..l.."; luacomp -mluamin init.lua | lua ../../utils/zlua.lua > ../../pkg/mods/"..l..".zy2m'")
+		if (os.execute("stat mods/"..l.."/.nomin 1>/dev/null 2>&1")) then
+			os.execute("sh -c 'cd mods/"..l.."; luacomp -mnone init.lua | lua ../../utils/zlua.lua > ../../pkg/mods/"..l..".zy2m'")
+		else
+			os.execute("sh -c 'cd mods/"..l.."; luacomp -mluamin init.lua | lua ../../utils/zlua.lua > ../../pkg/mods/"..l..".zy2m'")
+		end
 	end
 end
 status("Module build complete.\n\nBuilding libraries.")
