@@ -157,8 +157,8 @@ do
 		for i=1, #args do
 			args[i] = tostring(args[i])
 		end
-		local str = table.concat(args, "   ").."\n"
-		for m in str:gmatch("(.*)\n") do
+		local str = table.concat(args, "   ").."\n" -- ugly hack
+		for m in str:gmatch("(.-)\n") do
 			tty.write(m)
 			local x, y = tty.getcursor()
 			if (x ~= 1) then

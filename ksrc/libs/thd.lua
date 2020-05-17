@@ -59,7 +59,7 @@ function thd.run()
 				dl = computer.uptime() + (dl or math.huge)
 				threads[i][4] = dl
 				threads[i].delta = computer.uptime() - dt
-				sigs[#sigs+1] = {ps(0)}
+				--sigs[#sigs+1] = {ps(0)}
 			end
 		end
 	end

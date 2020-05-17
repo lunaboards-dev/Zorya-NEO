@@ -57,25 +57,36 @@ local gpu = proxy(list("gpu")())
 if (not gpu.getScreen()) then
 	gpu.bind(list("screen")())
 end
+local usepal
+if (gpu.getDepth() > 1) then
+	usepal = true
+	gpu.setPaletteColor(0, 0x000000)
+	gpu.setPaletteColor(1, 0xFFFFFF)
+	gpu.setPaletteColor(2, 0x4444FF)
+	gpu.setPaletteColor(3, 0xFF7F44)
+	gpu.setPaletteColor(4, 0x00007F)
+	gpu.setPaletteColor(5, 0x7F00FF)
+	gpu.setPaletteColor(6, 0x595959)
+end
+local function gc(c)
+	if usepal then
+		return c, true
+	end
+	return (c == 1) and 1 or 0
+end
 --Load palette
-gpu.setPaletteColor(0, 0x000000)
-gpu.setPaletteColor(1, 0xFFFFFF)
-gpu.setPaletteColor(2, 0x4444FF)
-gpu.setPaletteColor(3, 0xFF7F44)
-gpu.setPaletteColor(4, 0x00007F)
-gpu.setPaletteColor(5, 0x7F00FF)
-gpu.setPaletteColor(6, 0x595959)
-gpu.setBackground(0, true)
+gpu.setBackground(gc(0))
 local w, h = gpu.getViewport()
 gpu.fill(1, 2, w, h-1, " ")
-gpu.setBackground(5, true)
+gpu.setBackground(gc(5))
 gpu.fill(1, 1, w, 1, " ")
 local title = "Zorya NEO Installer v2.0"
 local spos = (w/2)-(#title/2)
-gpu.setForeground(1, true)
+gpu.setForeground(gc(1))
 gpu.set(spos, 1, title)
-gpu.setForeground(1, true)
-gpu.setBackground(5, true)
+--[[
+gpu.setForeground(gc(1))
+gpu.setBackground(gc(5))
 gpu.fill(6,6,w-12,h-12, " ")
 gpu.set(6,6,characters[1])
 gpu.set(w-6,6,characters[2])
@@ -84,17 +95,39 @@ gpu.set(w-6,h-6,characters[6])
 gpu.fill(7,6,w-13,1,characters[3])
 gpu.fill(7,h-6,w-13,1,characters[3])
 gpu.fill(6,7,1,h-13,characters[4])
-gpu.fill(w-6,7,1,h-13,characters[4])
-function setStatus(stat)
-	gpu.setBackground(5, true)
-	gpu.setForeground(1, true)
+gpu.fill(w-6,7,1,h-13,characters[4])]]
+
+function drawBox(x, y, w, h)
+	gpu.setForeground(gc(1))
+	gpu.setBackground(gc(5))
+	gpu.fill(x,y,x+w,y+h, " ")
+	gpu.fill(x,y,w,1,characters[3])
+	gpu.fill(x,y+h,w,1,characters[3])
+	gpu.fill(x,y,1,h,characters[4])
+	gpu.fill(x+w,y,1,h,characters[4])
+	gpu.set(x,y,characters[1])
+	gpu.set(x+w,y,characters[2])
+	gpu.set(x,y+h,characters[5])
+	gpu.set(x+w,y+h,characters[6])
+end
+
+function drawCenteredBox(x, y)
+	local marginx, marginy = (w-x)//2, (h-y)//2
+	drawBox(marginx, marginy, x, y)
+end
+
+function setStatus(stat, l1, l2)
+	l1 = l1 or ""
+	l2 = l2 or ""
+	gpu.setBackground(gc(5))
+	gpu.setForeground(gc(1))
 	gpu.fill(7,(h/2)-3, w-13, 1, " ")
 	gpu.set((w/2)-(#stat/2), (h/2)-3, stat)
 end
 function setBar(pos)
-	gpu.setBackground(6, true)
+	gpu.setBackground(gc(6))
 	gpu.fill(8, (h/2)+1, w-16, 1, " ")
-	gpu.setBackground(2, true)
+	gpu.setBackground(gc((usepal and 2) or 1))
 	gpu.fill(8, (h/2)+1, ((w-16)/100)*pos, 1, " ")
 	computer.pullSignal(0)
 end
@@ -103,6 +136,7 @@ function mkdir(fs, path)
 	fs.makeDirectory(path)
 end
 
+drawCenteredBox(w-8, h-8)
 
 setStatus("Setting up directories...")
 setBar(100)

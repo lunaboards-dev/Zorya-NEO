@@ -88,7 +88,7 @@ return function(autorun)
 						tty.print(s())
 					end, function(e)
 						tty.setcolor(0x4)
-						tty.print(debug.traceback(e):gsub("\t", "  "):gsub("\r", ""))
+						tty.print(debug.traceback(e):gsub("\t", "  "):gsub("\r", "\n"))
 					end)
 				end
 				tty.setcolor(2)
