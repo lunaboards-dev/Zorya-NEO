@@ -18,9 +18,9 @@ do
 	if (depth == 4) then --pregen color
 		for i=0, 15 do
 			local hi = i >> 3
-			local b = (i >> 2) & 1
+			local r = (i >> 2) & 1
 			local g = (i >> 1) & 1
-			local r = i & 1
+			local b = i & 1
 			local fr = (r * 0x7F) | (hi << 7)
 			local fg = (g * 0x7F) | (hi << 7)
 			local fb = (b * 0x7F) | (hi << 7)
@@ -29,6 +29,7 @@ do
 	end
 
 	function colors(i)
+		if (i < 0) then i = 0 elseif (i > 15) then i = 15 end
 		if (depth == 1) then
 			return ((i > 0) and 0xFFFFFF) or 0
 		elseif (depth == 4) then
