@@ -20,6 +20,8 @@
 	--{name="vdev", cat="util", path="mods/util_vdev.zy2m"},
 	{name="classic", cat="menu", path="mods/menu_classic.zy2m"},
 	{name="luaconsole", cat="util", path="mods/util_luaconsole.zy2m"},
+	{name="blkdev", cat="util", path="mods/util_blkdev.zy2m"},
+	{name="fat", cat="fs", path="mods/fs_fat.zy2m"},
 	--{name="vdevrt", cat="rtmod", path="mods/rtmod_vdevrt.zy2m"},
 	--{name="tsukinet", cat="net", path="mods/net_tsukinet"},
 	--{name="biosemu", cat="loader", path="mods/loader_biosemu.zy2m", warning="warn_mod_biosemu"},
