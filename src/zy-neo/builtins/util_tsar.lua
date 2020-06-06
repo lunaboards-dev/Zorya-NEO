@@ -83,7 +83,7 @@ function arc:meta(path)
 end
 
 
-return {
+local tsar = {
 	read = function(read, seek, close)
 		local tbl = {}
 		local lname = ""

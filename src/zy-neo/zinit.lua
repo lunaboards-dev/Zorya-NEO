@@ -26,9 +26,7 @@ local function load_lua(src, ...)
 	return load(src, ...)
 end
 
-local tsar = load([[
-$[[cat src/zy-neo/builtins/util_tsar.lua | luamin -c]]
-]])()
+--#include "src/zy-neo/builtins/util_tsar.lua"
 
 local builtins = {}
 --#include "src/zy-neo/utils.lua"

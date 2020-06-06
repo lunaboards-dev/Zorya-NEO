@@ -1,7 +1,7 @@
 local fs = require("filesystem")
 print("Regenerating Zorya NEO initramfs...")
-fs.copy("/.zy2/boot.tsar", "/.zy2/boot.tsar.old")
-local f = io.open("/.zy2/boot.tsar", "wb")
+fs.copy("/.zy2/image.tsar", "/.zy2/image.tsar.old")
+local f = io.open("/.zy2/image.tsar", "wb")
 local lst = {}
 for ent in fs.list("/etc/zorya-neo/initramfs.d") do
 	if ent:sub(#ent) ~= "/" then
