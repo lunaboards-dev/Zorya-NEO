@@ -3,10 +3,8 @@
 		local computer = computer
 		xpcall(function()
 			utils.debug_log("Copying env...")
-			local env = utils.deepcopy(_G)
+			local env = utils.make_env()
 			utils.debug_log("Coppied env.")
-			env._G = env
-			env._ENV = env
 			env.krequire = nil
 			env._BIOS = nil
 			env._ZVSTR = nil

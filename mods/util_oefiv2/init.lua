@@ -21,8 +21,7 @@ local function load_oefi_env(file, envx)
 		arc = cpio.read(envx.fs, file)
 	end
 	local oefi_env = {}
-	local env = {}
-	utils.deepcopy(_G, env)
+	local env = utils.make_env()
 	env.krequire = nil
 	env._BIOS = nil
 	env._ZVER = nil
@@ -116,8 +115,7 @@ end
 
 function ext.ZyNeo_GetOEFIEnv(drive, arc)
 	local oefi_env = {}
-	local env = {}
-	utils.deepcopy(_G, env)
+	local env = utils.make_env()
 	env.krequire = nil
 	env._BIOS = nil
 	env._ZVER = nil

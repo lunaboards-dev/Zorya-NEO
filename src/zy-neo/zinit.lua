@@ -1,24 +1,18 @@
 local lzss_decompress = ...
 --Zorya NEO itself.
 _BIOS = "Zorya NEO"
-_ZVSTR = "2.0-rc4"
+_ZVSTR = "2.0-rc5"
 _ZVER = 2.0
 _ZPAT = 0
 _ZGIT = "$[[git rev-parse --short HEAD]]"
 --#include "ksrc/kinit.lua"
 local thd = krequire("thd")
-local util = krequire("util")
 local sys = krequire("sys")
 local component = component
 local computer = computer
-local booted = false
-local zcfg = {}
-function log(...)
-	local c = component.list("ocemu")() or component.list("sandbox")()
-	if c then
-		component.proxy(c).log(...)
-	end
-end
+local cinvoke = component.invoke
+local clist = component.list
+local cproxy = component.proxy
 local th_i = 0
 local function th_a(func)
 	thd.add("zyneo$"..th_i, func)
@@ -26,19 +20,19 @@ local function th_a(func)
 end
 
 local function load_lua(src, ...)
-	log(#src)
 	if (src:sub(1, 4) == "\27ZLS") then
 		src = lzss_decompress(src:sub(5))
 	end
 	return load(src, ...)
 end
 
+local tsar = load([[
+$[[cat src/zy-neo/builtins/util_tsar.lua | luamin -c]]
+]])()
+
 local builtins = {}
 --#include "src/zy-neo/utils.lua"
-
-local tsar = load([[
---#include "src/zy-neo/builtins/util_tsar.lua"
-]])()
+local log = utils.debug_log
 
 sys.add_lib("zorya", (function()
 
@@ -56,8 +50,6 @@ sys.add_lib("zorya", (function()
 
 	local loaded_mods = {}
 
-	loaded_mods.util_tsar = tsar
-
 	function zy.loadmod(mod)
 		if (loaded_mods[mod]) then return loaded_mods[mod] end
 		for i=1, #mod_search do
@@ -65,10 +57,6 @@ sys.add_lib("zorya", (function()
 			local r = mod_search[i](mod)
 			if r then loaded_mods[mod] = r return r end
 		end
-	end
-
-	function zy.loader_run(func, env)
-		func(env)
 	end
 
 	function zy.add_mod_search(func)
@@ -94,11 +82,11 @@ th_a(function()
 	xpcall(function()
 		local zy = krequire("zorya")
 		zy.add_mod_search(function(mod)
-			if (bfs.exists(".zy2/mods/"..mod..".zy2m")) then
-				utils.debug_log(mod, ".zy2m")
-				return load_lua(bfs.getfile(".zy2/mods/"..mod..".zy2m"), "=.zy2/mods/"..mod..".zy2m")()
-			elseif (bfs.exists(".zy2/mods/"..mod.."/init.zy2m")) then
-				return assert(load_lua(bfs.getfile(".zy2/mods/"..mod.."/init.zy2m"), "=.zy2/mods/"..mod.."/init.zy2m"))()
+			if (bfs.exists(".zy2/mods/"..mod..".velx")) then
+				--utils.debug_log(mod, ".zy2m")
+				--return load_lua(bfs.getfile(".zy2/mods/"..mod..".zy2m"), "=.zy2/mods/"..mod..".zy2m")()
+				local r,s,c = bfs.getstream(".zy2/mods/"..mod..".velx")
+				return assert(utils.load_velx(r,s,c,".zy2/mods/"..mod..".velx"))()
 			end
 		end)
 		sys.add_search(function(mod)
@@ -107,28 +95,31 @@ th_a(function()
 			end
 		end)
 		sys.add_search(function(mod)
-			if (bfs.exists(".zy2/lib/"..mod..".zy2l")) then
-				return load_lua(bfs.getfile(".zy2/lib/"..mod..".zy2l"), "=.zy2/lib/"..mod..".zy2l")
-			elseif (bfs.exists(".zy2/lib/"..mod.."/init..zy2l")) then
-				return load_lua(bfs.getfile(".zy2/lib/"..mod.."/init.zy2l"), "=.zy2/lib/"..mod.."/init.zy2l")
+			if (bfs.exists(".zy2/lib/"..mod..".velx")) then
+				local r,s,c = bfs.getstream(".zy2/lib/"..mod..".velx")
+				return utils.load_velx(r,s,c,".zy2/lib/"..mod..".velx")
+				--return load_lua(bfs.getfile(".zy2/lib/"..mod..".velx"), "=.zy2/lib/"..mod..".zy2l")
 			end
 		end)
 		local zycfg = bfs.getcfg()
 		-- Config loaded, now we can do our shit.
-		local env = {
-			zorya = zy,
-			loadmod = zy.loadmod,
-			loadfile = bfs.getfile,
-			_BOOTADDR = bfs.addr
-		}
-		for k, v in pairs(_G) do
-			env[k] = v
+		local env = utils.make_env()
+		env.zorya = zy
+		env.loadmod = zy.loadmod
+		env.loadfile = bfs.getfile
+		env._BOOTADDR = bfs.addr
+
+		local c, e = load(zycfg, "=zycfg", "t", env)
+		if c then
+			return c()
+		else
+			utils.console_panic(e)
 		end
-		env._G = env
-		env._ENV = env
-		return assert(load(zycfg, "=zycfg", "t", env))()
 	end, function(e)
 		er = e..": "..debug.traceback()
+		if(not utils.console_panic(er)) then
+			er = er .. "\n(Lua console failed to start)"
+		end
 	end)
 	if er then error(er) end
 end)

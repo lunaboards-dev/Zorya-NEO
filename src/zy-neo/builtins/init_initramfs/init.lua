@@ -1,5 +1,5 @@
 _ZLOADER = "initramfs"
-local readfile=function(f,h)
+--[[local readfile=function(f,h)
 	local b=""
 	local d,r=f.read(h,math.huge)
 	if not d and r then error(r)end
@@ -11,19 +11,19 @@ local readfile=function(f,h)
 	end
 	f.close(h)
 	return b
-end
+end]]
 
 local bfs = {}
 
-local cfg = component.proxy(component.list("eeprom")()).getData()
+local cfg = cproxy(clist("eeprom")()).getData()
 
 local baddr = cfg:sub(1, 36)
-local bootfs = component.proxy(baddr)
+local bootfs = cproxy(baddr)
 
 assert(bootfs.exists(".zy2/image.tsar"), "No boot image!")
 
 local romfs_file = assert(bootfs.open(".zy2/image.tsar", "rb"))
-local rfs = readfile(bootfs, romfs_file)
+local rfs = utils.readfile(bootfs, romfs_file)
 
 --[[local romfs_dev = tsar.read(function(a)
 	local c = ""
@@ -59,9 +59,13 @@ function bfs.exists(path)
 	return romfs_dev:exists(path)
 end
 
+function bfs.getstream(path)
+	return romfs_dev:stream(path)
+end
+
 function bfs.getcfg()
 	local h = assert(bootfs.open(".zy2/cfg.lua", "r"))
-	return readfile(bootfs, h)
+	return utils.readfile(bootfs, h)
 end
 
 bfs.addr = baddr

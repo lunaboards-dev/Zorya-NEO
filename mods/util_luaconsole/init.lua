@@ -1,4 +1,14 @@
+local utils = krequire("utils")
 --#include "tty.lua"
+--#include "velx.lua"
+--#include "load.lua"
+
+function _runcmd(cmd)
+	local rcmd = cmd:sub(1, (cmd:find(" ") or (#cmd+1))-1)
+	local script = _ARCHIVE:fetch("bin/"..rcmd..".lua")
+	load(script, "=bin/"..rcmd..".lua", "t", _G)(cmd:sub(#rcmd+1):gsub("^%s+", ""))
+end
+
 return function(autorun)
 	local keys = {
 		lcontrol        = 0x1D,
@@ -37,7 +47,10 @@ return function(autorun)
 		print = nil
 	end
 	if (autorun) then
-		load(autorun)()
+		local c = load(autorun)
+		if c then
+			pcall(c)
+		end
 	end
 	tty.print("")
 	tty.setcolor(2)
@@ -70,6 +83,8 @@ return function(autorun)
 			elseif (sig[4] == keys.enter) then
 				if (buffer:sub(1,1) == "=") then
 					buffer = "return "..buffer:sub(2)
+				elseif (buffer:sub(1,1) == "$") then
+					buffer = "return _runcmd(\""..buffer:sub(2).."\")"
 				end
 				local s, e = load(buffer)
 				local x, y = tty.getcursor()
@@ -92,7 +107,7 @@ return function(autorun)
 					end)
 				end
 				tty.setcolor(2)
-				tty.write("boot> ")
+				tty.write(((_DRIVE and _DRIVE:sub(1, 4)) or "boot").."> ")
 				tty.setcolor(0xF0)
 				tty.write(" ")
 				tty.setcolor(0xF)

@@ -8,8 +8,7 @@ local oefi = {}
 
 local function load_oefi(drive, path, uuid)
 	local oefi_env = {}
-	local env = {}
-	utils.deepcopy(_G, env)
+	local env = utils.make_env()
 	env.krequire = nil
 	env._BIOS = nil
 	env._ZVER = nil
