@@ -23,7 +23,7 @@ local bootfs = cproxy(baddr)
 assert(bootfs.exists(".zy2/image.tsar"), "No boot image!")
 
 local romfs_file = assert(bootfs.open(".zy2/image.tsar", "rb"))
-local rfs = utils.readfile(bootfs, romfs_file)
+local rfs = readfile(bootfs, romfs_file)
 
 --[[local romfs_dev = tsar.read(function(a)
 	local c = ""
@@ -65,7 +65,7 @@ end
 
 function bfs.getcfg()
 	local h = assert(bootfs.open(".zy2/cfg.lua", "r"))
-	return utils.readfile(bootfs, h)
+	return readfile(bootfs.address, h)
 end
 
 bfs.addr = baddr

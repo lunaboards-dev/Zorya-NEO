@@ -138,5 +138,6 @@ for i=1, #lst do
 	print(lst[i])
 	writefile("/etc/zorya-neo/lib/"..lst[i]:sub(9), arc:fetch(lst[i]))
 end
+writefile("/etc/zorya-neo/bootstrap.bin", arc:fetch("bootstrap.bin"))
 arc:close()
 print("Installation complete.")

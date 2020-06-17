@@ -7,13 +7,14 @@ local function get_end(e)
 end
 local function read_header(dat)
 	local e = get_end(en)
-	local m = string.unpack(e.."I2", dat)
+	local m = sunpack(e.."I2", dat)
 	if m ~= magic and m ~= magic_rev then return nil, string.format("bad magic (%.4x)", m) end
 	if m ~= magic then
 		e = get_end(not en)
 	end
 	local ent = {}
-	ent.magic, ent.namesize, ent.mode, ent.uid, ent.gid, ent.filesize, ent.mtime = string.unpack(e..header_fmt, dat)
+	ent.magic, ent.namesize, ent.mode, ent.uid, ent.gid, ent.filesize, ent.mtime = sunpack(e..header_fmt, dat)
+	ent.mtime = ent.mtime/1000
 	return ent
 end
 

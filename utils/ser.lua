@@ -176,7 +176,7 @@ function makeDirectory(path)
 		uid = 0,
 		gid = 0,
 		filesize = 0,
-		mtime = os.time()
+		mtime = os.time()*1000
 	}
 	fs.write(romfs, string.pack("=I2I2I2I2I2I6I6", ent.magic, ent.namesize, ent.mode, ent.uid, ent.gid, ent.filesize, ent.mtime))
 	fs.write(romfs, path)
@@ -208,11 +208,11 @@ function writeFile(path, data)
 		name = path,
 		namesize = #path,
 		magic = 0x5f7d,
-		mode = getperm("file", ((ext == "lua" or ext == "z2l" or ext == "z2y") and "r-xr-xr-x") or "rw-r--r--"),
+		mode = getperm("file", ((ext == "lua" or ext == "z2l" or ext == "z2y" or ext == "velx") and "r-xr-xr-x") or "rw-r--r--"),
 		uid = 0,
 		gid = 0,
 		filesize = #data,
-		mtime = os.time()
+		mtime = os.time()*1000
 	}
 	fs.write(romfs, string.pack("=I2I2I2I2I2I6I6", ent.magic, ent.namesize, ent.mode, ent.uid, ent.gid, ent.filesize, ent.mtime))
 	fs.write(romfs, path)
@@ -242,28 +242,25 @@ for i=1, #pkg_files do
 	writeFile(".zy2/"..pkg_files[i].path, getfile(pkg_files[i].path))
 end
 
-writeFile("TRAILER!!!", [[{os="Zorya NEO",version="2.0"}]])
-
 setStatus("Extracting EEPROM...")
 setBar(0)
 local bios = getfile(bios_files[1].path)
 
 setStatus("Flashing EEPROM...")
-setBar(33)
+setBar(25)
 local eeprom = proxy(list("eeprom")())
 eeprom.set(bios)
 setStatus("Writing configuration data...")
-setBar(66)
-function hexid_to_binid(addr)
-  addr=addr:gsub("%-", "")
-  local baddr = ""
-  for i=1, #addr, 2 do
-    baddr = baddr .. string.char(tonumber(addr:sub(i, i+1), 16))
-  end
-  return baddr
-end
+setBar(50)
 eeprom.setData(fs.address)
 eeprom.setLabel("Zorya NEO BIOS v2.0")
+
+setStatus("Writing bootstrapper...")
+setBar(75)
+writeFile("bootstrap.bin", getfile("bios/bootstrap.bin"))
+
+writeFile("TRAILER!!!", [[{os="Zorya NEO",version="2.0"}]])
+
 setBar(100)
 setStatus("Rebooting in 5 seconds...")
 if not fs.exists(".zy2/cfg.lua") then

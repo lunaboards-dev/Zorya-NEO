@@ -1,4 +1,4 @@
-function lzss_decompress(a)local b,c,d,e,j,i,h,g=1,'',''while b<=#a do
+local function lzss_decompress(a)local b,c,d,e,j,i,h,g=1,'',''while b<=#a do
 e=c.byte(a,b)b=b+1
 for k=0,7 do h=c.sub
 g=h(a,b,b)if e>>k&1<1 and b<#a then

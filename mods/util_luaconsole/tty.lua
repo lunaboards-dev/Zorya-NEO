@@ -3,7 +3,8 @@ tty = {}
 do
 	local gpu = component.proxy(component.list("gpu")())
 	if not gpu.getScreen() then
-		gpu.bind(component.list("screen")())
+		local saddr = component.list("screen")()
+		gpu.bind(saddr)
 	end
 	local gfg = -1
 	local gbg = -1

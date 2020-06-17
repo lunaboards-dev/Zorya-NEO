@@ -36,13 +36,17 @@ local function create_node(attr)
 		uid = attr.uid,
 		gid = attr.gid,
 		filesize = attr.filesize,
-		mtime = attr.mtime
+		mtime = (attr.mtime*1000)//1
 	}
-	if attr.mode ~= "file" then
-		ent.filesize = 0
-	end
 	f:write(string.pack("=I2I2I2I2I2I6I6", ent.magic, ent.namesize, ent.mode, ent.uid, ent.gid, ent.filesize, ent.mtime))
+	f:write(attr.name or "")
+	if (ent.namesize & 1 > 0) then
+		f:write("\0")
+	end
 	f:write(attr.data or "")
+	if (ent.filesize & 1 > 0) then
+		f:write("\0")
+	end
 end
 local arc = {}
 function arc.file(path, perm, data)

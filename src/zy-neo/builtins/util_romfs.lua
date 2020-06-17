@@ -9,7 +9,7 @@ end
 function romfs.read(read, seek, close)
 	local sig = read(7)
 	assert(sig, "Read error!")
-	if sig ~= "romfs\1\0" then error(string.format("Invalid romfs (%.14x != %.14x)", string.unpack("i7", sig), string.unpack("i7", "romfs\1\0"))) end
+	if sig ~= "romfs\1\0" then error(string.format("Invalid romfs (%.14x != %.14x)", sunpack("i7", sig), sunpack("i7", "romfs\1\0"))) end
 	local tbl = {}
 	local lname
 	while lname ~= "TRAILER!!!" do

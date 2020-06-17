@@ -8,7 +8,7 @@ local bootfs = cproxy(baddr)
 --find active partition
 local bs, p, t, ss = bootfs.readSector(1), "I4I4c8I3c13", {}
 for i=1, 15 do
-	t = {p:unpack(bs:sub((i*32)+1, (i+1)*32))}
+	t = {sunpack(p, bs:sub((i*32)+1, (i+1)*32))}
 	if (t[4] & 0x200 and t[4] & 0x40) then
 		ss = t[1]
 	end

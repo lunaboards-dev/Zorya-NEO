@@ -1,24 +1,11 @@
-local lzss_decompress = ...
+local lzss_decompress, tsar, bfs, readfile = ...
 --Zorya NEO itself.
-_BIOS = "Zorya NEO"
-_ZVSTR = "2.0-rc5"
-_ZVER = 2.0
-_ZPAT = 0
-_ZGIT = "$[[git rev-parse --short HEAD]]"
+_BIOS, _ZVSTR, _ZVER, _ZPAT, _ZGIT = "Zorya NEO", "2.0-rc5", 2.0, 0, "$[[git rev-parse --short HEAD]]"
 --#include "ksrc/kinit.lua"
-local thd = krequire("thd")
-local sys = krequire("sys")
-local component = component
-local computer = computer
-local cinvoke = component.invoke
-local clist = component.list
-local cproxy = component.proxy
-local th_i = 0
-local function th_a(func)
-	thd.add("zyneo$"..th_i, func)
-	th_i = th_i + 1
-end
-
+local krq = krequire
+local sunpack = string.unpack
+local thd, sys, ct, cr = krq"thd", krq"sys", component, computer
+local cinvoke, clist, cproxy = ct.invoke, ct.list, ct.proxy
 local function load_lua(src, ...)
 	if (src:sub(1, 4) == "\27ZLS") then
 		src = lzss_decompress(src:sub(5))
@@ -26,7 +13,7 @@ local function load_lua(src, ...)
 	return load(src, ...)
 end
 
---#include "src/zy-neo/builtins/util_tsar.lua"
+---#include "src/zy-neo/builtins/util_tsar.lua"
 
 local builtins = {}
 --#include "src/zy-neo/utils.lua"
@@ -61,24 +48,16 @@ sys.add_lib("zorya", (function()
 		mod_search[#mod_search+1] = func
 		log(#mod_search)
 	end
-
-	function zy.lkthdn()
-		return #thd.get_threads()
-	end
-
-	function zy.lkthdi(i)
-		return thd.get_threads()[i]
-	end
 	return zy
 end)())
 
---#include "src/zy-neo/init.lua"
+---#include "src/zy-neo/init.lua"
 
 -- Zorya's handler thread.
-th_a(function()
+thd.add("zyneo", function()
 	local er
 	xpcall(function()
-		local zy = krequire("zorya")
+		local zy = krq"zorya"
 		zy.add_mod_search(function(mod)
 			if (bfs.exists(".zy2/mods/"..mod..".velx")) then
 				--utils.debug_log(mod, ".zy2m")
@@ -109,17 +88,21 @@ th_a(function()
 
 		local c, e = load(zycfg, "=zycfg", "t", env)
 		if c then
-			return c()
+			xpcall(function()
+					return c()
+				end,
+				function(e)
+					er = debug.traceback(e)
+					utils.console_panic(er)
+				end)
 		else
 			utils.console_panic(e)
 		end
 	end, function(e)
 		er = e..": "..debug.traceback()
-		if(not utils.console_panic(er)) then
-			er = er .. "\n(Lua console failed to start)"
-		end
+		utils.console_panic(er)
 	end)
-	if er then error(er) end
+	if er then utils.console_panic(er) end
 end)
 
 sys.start()

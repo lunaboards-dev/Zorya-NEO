@@ -53,7 +53,7 @@ end
 
 function bfs.getcfg()
 	local h = assert(bootfs.open(".zy2/cfg.lua", "r"))
-	return utils.readfile(bootfs, h)
+	return readfile(bootfs.address, h)
 end
 
 bfs.addr = baddr
