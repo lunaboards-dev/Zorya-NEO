@@ -1,0 +1,1 @@
+os.execute("mkdir -p release")
