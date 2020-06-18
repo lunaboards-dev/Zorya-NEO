@@ -1,6 +1,7 @@
 {
 	{name="zlan", cat="util", path="lib/util_zlan.velx"},
 	{name="cpio", cat="util", path="lib/util_cpio.velx"},
+	{name="velx", cat="util", path="mods/util_velx.velx"},
 	{name="urf", cat="util", path="lib/util_urf.velx"},
 	{name="vcomponent", cat="util", path="lib/util_vcomponent.velx"},
 	{name="oefiv2", cat="util", path="mods/util_oefiv2.velx"},

@@ -301,4 +301,24 @@ function arc:list_dir(path)
 	return objects
 end
 
+function arc:stream(path)
+	local obj = path_to_obj(self, path)
+
+	local fpos = self.epos+obj.offset
+
+	local pos = 1
+	local function read(amt)
+		self.seek(self.tbl[i].pos-self.seek(0)+pos-1)
+		pos = pos + amt
+		return self.read(amt)
+	end
+	local function seek(amt)
+		pos = pos + amt
+		return pos
+	end
+	local function close()end
+	return read, seek, close
+	return nil, "file not found"
+end
+
 return urf

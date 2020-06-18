@@ -95,4 +95,24 @@ function arc:list_dir(path)
 	return ent
 end
 
+function arc:stream()
+	for i=1, #self.tbl do
+		if (self.tbl[i].name == path and self.tbl[i].mode & 32768 > 0) then
+			local pos = 1
+			local function read(amt)
+				self.seek(self.tbl[i].pos-self.seek(0)+pos-1)
+				pos = pos + amt
+				return self.read(amt)
+			end
+			local function seek(amt)
+				pos = pos + amt
+				return pos
+			end
+			local function close()end
+			return read, seek, close
+		end
+	end
+	return nil, "file not found"
+end
+
 return cpio

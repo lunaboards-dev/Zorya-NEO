@@ -41,7 +41,7 @@ function arcfs.make(arc)
 		
 	end
 	function proxy.size(path)
-		
+		return 
 	end
 	function proxy.read(hand, count)
 
