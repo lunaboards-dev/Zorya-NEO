@@ -6,7 +6,7 @@ function actions.installer()
 	os.execute("mkdir -p pkg/installer_dat/lang")
 	local h = io.popen("ls installer_dat/lang | grep lua", "r")
 	for line in h:lines() do
-		os.execute("luacomp installer_dat/lang/"..line.." -O pkg/lang/"..line)
+		os.execute("luacomp installer_dat/lang/"..line.." -O pkg/installer_dat/lang/"..line)
 	end
 	h:close()
 	makeselfextract("pkg", "release/zorya-neo-installer.lua")

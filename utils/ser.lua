@@ -231,7 +231,7 @@ local bios_files = load("return "..getfile("installer_dat/bios_list.lua"))()
 setBar(33)
 local pkg_files = load("return "..getfile("installer_dat/package_list.lua"))()
 setBar(67)
-local lang = load("return "..getfile("installer_dat/lang/en_US.lua"))()
+local lang = load("return "..(getfile("installer_dat/lang/en_US.lua") or "{}"))()
 setBar(100)
 
 setStatus("Extracting files...")
