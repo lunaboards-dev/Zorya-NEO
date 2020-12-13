@@ -42,6 +42,10 @@ local function readfile(f,h)
 	return b
 end
 
+local xxh = (function()
+--#include "src/zy-neo/builtins/util_xxh64.lua"
+end)()
+
 --#include "src/zy-neo/builtins/util_tsar.lua"
 @[[if not svar.get("ZY_PLATFORM") then]]
 --#define "ZY_PLATFORM" "managed"

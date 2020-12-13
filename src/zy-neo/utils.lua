@@ -53,10 +53,28 @@ end
 
 local velx_header = "<c5BBBBc4I3I3I3I4"
 function utils.load_velx(read, seek, close, name)
+	local spos = seek()
 	-- Load a VELX format library.
 	local magic, fver, compression, lver, osid, arctype, psize, lsize, ssize, rsize = sunpack(velx_header, read(string.packsize(velx_header)))
 	if magic ~= "\27VelX" then
 		return nil, "bad magic ("..magic..")"
+	end
+	if (fver == 2) then
+		seek(spos-seek())
+		local vx2 = utils.velx2(read, seek, close, name)
+		if (vx2.type > 0) then
+			return nil, "not an executable"
+		end
+		local code = vx2:getsection(0x5A, "lua")
+		local t = vx2:gettag(0x5A, "archive", "type")
+		local env = {}
+		if (t and t ~= "tsar") then
+			return nil, "bad arctype"
+		elseif (t) then
+			env._ARCHIVE = tsar.read(vx2:getstream(0x5A, "archive"))
+		end
+		setmetatable(env, {__index=_G, __newindex=function(_, i, v) _G[i] = v end})
+		return load(code, "="..(name or "(loaded velx)"), "t", env)
 	end
 	if osid & 0x7F ~= 0x5A then
 		return nil, string.format("wrong os (%x ~= 0x5A)", osid & 0x7F)

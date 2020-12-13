@@ -231,7 +231,9 @@ local bios_files = load("return "..getfile("installer_dat/bios_list.lua"))()
 setBar(33)
 local pkg_files = load("return "..getfile("installer_dat/package_list.lua"))()
 setBar(67)
-local lang = load("return "..(getfile("installer_dat/lang/en_US.lua") or "{}"))()
+local lf = load("return "..(getfile("installer_dat/lang/en_US.lua") or "{}"))
+if not lf then lf = function()return {}end end
+local lang = lf()
 setBar(100)
 
 setStatus("Extracting files...")
@@ -239,7 +241,7 @@ setBar(0)
 for i=1, #pkg_files do
 	setStatus("Extracting "..(lang["mod_"..pkg_files[i].cat.."_"..pkg_files[i].name.."_name"] or "#mod_"..pkg_files[i].cat.."_"..pkg_files[i].name.."_name").."... ("..i.." of "..#pkg_files..")")
 	setBar(100*(i/#pkg_files))
-	writeFile(".zy2/"..pkg_files[i].path, getfile(pkg_files[i].path))
+	writeFile(".zy2/"..pkg_files[i].path, getfile(pkg_files[i].path) or "")
 end
 
 setStatus("Extracting EEPROM...")

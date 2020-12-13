@@ -7,6 +7,7 @@
 	{name="oefiv2", cat="util", path="mods/util_oefiv2.velx"},
 	{name="oefiv1", cat="util", path="mods/util_oefiv1.velx"},
 	{name="openos", cat="loader", path="mods/loader_openos.velx"},
+	{name="monolith", cat="loader", path="mods/loader_monolith.velx"},
 	{name="fuchas", cat="loader", path="mods/loader_fuchas.velx"},
 	{name="vbios", cat="vdev", path="mods/vdev_vbios.velx"},
 	{name="biosdev", cat="vdev", path="mods/vdev_biosdev.velx"},

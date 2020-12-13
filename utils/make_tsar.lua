@@ -73,4 +73,4 @@ do
 	io.stdout:write(ent.name)
 	size = size + 32
 end
-io.stderr:write((size//512).." blocks.\n")
+--io.stderr:write((size//512).." blocks.\n")

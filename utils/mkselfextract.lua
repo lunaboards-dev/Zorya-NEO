@@ -77,7 +77,7 @@ function lzss_compress(input)
 end
 
 local tmp = os.tmpname()
-local h = io.popen("luacomp ../utils/selfextract.lua -O"..tmp, "w")
+local h = io.popen("luacomp ../utils/selfextract.lua -O"..tmp.." 2>/dev/null", "w")
 --h:write(mkstr(lzss_compress(f)))
 h:write(mkstr(f))
 h:close()

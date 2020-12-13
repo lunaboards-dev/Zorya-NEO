@@ -9,6 +9,7 @@ local function load_velx(read, seek, close, name)
 	end
 	if (osid & 0x80 > 0) then
 		return nil, "not an executable"
+	end
 	if (compression > 1) then
 		return nil, "bad compression"
 	end

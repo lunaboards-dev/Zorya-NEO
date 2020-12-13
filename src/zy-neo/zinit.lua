@@ -18,6 +18,8 @@ end
 local builtins = {}
 --#include "src/zy-neo/utils.lua"
 local log = utils.debug_log
+builtins.utils_tsar = function() return tsar end
+builtins.util_xxh64 = function() return xxh end
 
 sys.add_lib("zorya", (function()
 
