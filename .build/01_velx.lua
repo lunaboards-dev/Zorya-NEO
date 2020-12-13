@@ -139,7 +139,7 @@ local function struct(tbl)
 			for i=1, #args do
 				sval[i] = arg[args[i]]
 			end
-			return string.pack(pat, unpack(sval))
+			return string.pack(pat, table.unpack(sval))
 		end
 	end, __len=function()
 		return string.packsize(pat)
@@ -171,7 +171,7 @@ local function velx_multistep(path, arcpath, args, steps)
 		end
 	end
 	steps.precomp()
-	local h = io.popen(shell_args.."luacomp "..path, "r")
+	local h = io.popen(shell_args.."luacomp "..path.." 2>/dev/null", "r")
 	local prog = h:read("*a")
 	h:close()
 	prog = steps.postcomp(prog)
@@ -217,3 +217,6 @@ end
 local function velxv2(sections)
 
 end
+
+EXPORT.velx = velx
+EXPORT.velx_multistep = velx_multistep

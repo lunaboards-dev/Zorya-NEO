@@ -119,8 +119,8 @@ do
 			if (sec.id == osid and sec.name == name or sec.id == 0) then
 				self.seek(sec.pos-self.seek())
 				local dat = self.read(sec.size)
-				if (sec.tags.compression == "lz4") then
-					dat = lz4_decompress(dat)
+				if (sec.tags.compression == "lzss") then
+					dat = lzss_decompress(dat)
 				end
 				return dat
 			end
